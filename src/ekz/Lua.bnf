@@ -1,0 +1,403 @@
+{
+  parserClass="ekz.parser.LuaParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Lua"
+  psiImplClassSuffix="Impl"
+  psiPackage="ekz.psi"
+  psiImplPackage="ekz.psi.impl"
+
+  elementTypeHolderClass="ekz.psi.LuaTypes"
+  elementTypeClass="ekz.psi.LuaElementType"
+  elementTypeFactory="ekz.LuaParserDefinition.createType"
+  tokenTypeClass="ekz.psi.LuaTokenType"
+  parserImports = "static com.intellij.lang.WhitespacesBinders.*"
+  psiImplUtilClass="ekz.psi.impl.LuaPsiImplUtil"
+
+  tokens = [
+        /* Keywords */
+        AND = "and"
+        BREAK = "break"
+        DO = "do"
+        ELSE = "else"
+        ELSEIF = "elseif"
+        END = "end"
+        FALSE = "false"
+        FOR = "for"
+        FUNC = "function"
+        IF = "if"
+        IN = "in"
+        LOCAL = "local"
+        NIL = "nil"
+        NOT = "not"
+        OR = "or"
+        REPEAT = "repeat"
+        RETURN = "return"
+        THEN = "then"
+        TRUE = "true"
+        UNTIL = "until"
+        WHILE = "while"
+        REGION = "REGION"
+        ENDREGION = "ENDREGION"
+
+        ELLIPSIS = "..."
+        CONCAT = ".."
+        EQ = "=="
+        GE = ">="
+        LE = "<="
+        NE = "~="
+        MINUS = "-"
+        PLUS = "+"
+        MULT = "*"
+        MOD = "%"
+        DIV = "/"
+        ASSIGN = "="
+        GT = ">"
+        LT = "<"
+        LPAREN = "("
+        RPAREN = ")"
+        LBRACK = "["
+        RBRACK = "]"
+        LCURLY = "{"
+        RCURLY = "}"
+        GETN = "#"
+        COMMA = ","
+        SEMI = ";"
+        COLON = ":"
+        DOT = "."
+        EXP = "^"
+        EVAR = "_"
+
+        BLOCK_COMMENT="BLOCK_COMMENT"
+        SHORT_COMMENT="SHORT_COMMENT"
+        ID="regexp:[A-Za-z_][A-Za-z0-9_]*"
+        STRING = "STRING"
+        NUMBER="NUMBER"
+        SPACE='regexp:\s+'
+  ]
+}
+
+luaFile ::= class|((chunk SEMI?)*)
+
+/*meta comma_separated_list ::= <<param>> ( ',' <<param>> ) *
+chunk::= <<comma_separated_list (name)>>*/
+//left обернет предыдущий rule, left inner вложится в предыдущий rule
+private chunk ::= contextDefinition|beanDefinition|varAssignment|varId|funcLocalDef|funcDef|localVarAssignment|ifStatement|
+whileStatement|repeatStatement|forStatement|returnCondition|BREAK|doBlock
+{
+  recoverWhile=statement_recover
+}
+
+private statement_recover ::= !(SEMI | ID | LOCAL | FUNC | END | IF | FOR | WHILE | REPEAT | UNTIL | RETURN | ELSE |
+ELSEIF |  BREAK | DO | EVAR | RCURLY | LCURLY)
+//interface
+interfaceIndicator ::= "public.interface"|"package.interface"
+private interfaceHeader ::= interfaceIndicator LPAREN className (COMMA parentName)? RPAREN
+{
+  pin=1
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation]
+}
+//inner interface
+innerInterfaceIndicator ::= "public.inner.interface"|"private.inner.interface"|"package.inner.interface"|
+"protected.inner.interface"
+innerInterfaceName ::= STRING
+{
+  mixin="ekz.psi.impl.LuaNamedElementImpl"
+	methods=[getNameIdentifier setName getName getPresentation getUnquotedText]
+}
+innerInterfaceDefinition ::= innerInterfaceIndicator LPAREN innerInterfaceName COMMA parentsToInherit COMMA table RPAREN
+{
+  pin=1
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation]
+}
+
+enumIndicator ::= "public.enum"|"package.enum"
+private enumHeader ::= enumIndicator LPAREN className (COMMA parentsToInherit (COMMA interfacesToImplement)?)? RPAREN
+{
+  pin=1
+  //TODO possibly stub needed
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation]
+}
+//inner enum
+innerEnumIndicator ::= "public.inner.enum"|"private.inner.enum"|"package.inner.enum"|"protected.inner.enum"
+innerEnumName ::= STRING
+{
+  mixin="ekz.psi.impl.LuaNamedElementImpl"
+	methods=[getNameIdentifier setName getName getPresentation getUnquotedText]
+}
+innerEnumDefinition ::= innerEnumIndicator LPAREN innerEnumName COMMA parentsToInherit COMMA interfacesToImplement
+  COMMA table RPAREN
+{
+  pin=1
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation]
+}
+//class
+class ::= classPackageDefinition importList? classHeader classBody
+{
+  pin=classIndicator
+	implements="ekz.psi.LuaNamedElement"
+	stubClass="ekz.psi.stubs.LuaClassStub"
+  methods=[getNameIdentifier setName getName getPresentation]
+}
+classBody ::= LCURLY (classElementDefinition+)? RCURLY
+
+private classModifierIndicator ::= ".class"
+private publicIndicator ::= "public.final"|"public.static.final"|"public.static"|"public.abstract"|"public"
+private packageIndicator ::= "package.final"|"package.static.final"|"package.static"|"package.abstract"|"package"
+private privateIndicator ::= "private.final"|"private.static.final"|"private.static"|"private.abstract"|"private"
+private protectedIndicator ::= "protected.final"|"protected.static.final"|"protected.static"|"protected.abstract"|"protected"
+private publicClassIndicator ::= publicIndicator classModifierIndicator
+private packageClassIndicator ::= packageIndicator classModifierIndicator
+classIndicator ::= publicClassIndicator|packageClassIndicator
+private simpleClassHeader ::= classIndicator LPAREN className (COMMA (parentsToInherit|NIL) (COMMA interfacesToImplement)?)? RPAREN
+classHeader ::= simpleClassHeader | enumHeader | interfaceHeader
+{
+  pin=2
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation]
+}
+className ::= STRING
+{
+  mixin="ekz.psi.impl.LuaNamedElementImpl"
+	methods=[getNameIdentifier setName getName getPresentation getUnquotedText]
+}
+private parentsToInherit ::= parentName | parentNamesList
+parentNamesList ::= LCURLY parentName (COMMA parentName)* RCURLY
+parentName ::= idName
+{
+	mixin="ekz.psi.impl.LuaNamedElementImpl"
+	methods=[getNameIdentifier setName getName getUnquotedText]
+}
+private interfacesToImplement ::= interfaceName | interfaceNamesList
+interfaceNamesList ::= LCURLY interfaceName (COMMA interfaceName)* RCURLY
+interfaceName ::= idName
+{
+	mixin="ekz.psi.impl.LuaNamedElementImpl"
+	methods=[getNameIdentifier setName getName getUnquotedText]
+}
+//inner class
+private innerIndicator ::= ".inner"
+private publicInnerClassIndicator ::= publicIndicator innerIndicator classModifierIndicator
+private privateInnerClassIndicator ::= privateIndicator innerIndicator classModifierIndicator
+private packageInnerClassIndicator ::= packageIndicator innerIndicator classModifierIndicator
+private protectedInnerClassIndicator ::= protectedIndicator innerIndicator classModifierIndicator
+innerClassIndicator ::= publicInnerClassIndicator|privateInnerClassIndicator|packageInnerClassIndicator|
+protectedInnerClassIndicator
+innerClassDefinition ::= innerClassIndicator LPAREN className (COMMA parentName)? (COMMA interfacesToImplement)?
+  COMMA table RPAREN
+{
+  pin=2
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation]
+}
+//class element
+//class var
+classElementGetterIndicator ::= "public.getter"|"private.getter"|"package.getter"|"protected.getter"
+classElementSetterIndicator ::= "public.setter"|"private.setter"|"package.setter"|"protected.setter"
+classElementAccessMethodIndicator ::= classElementGetterIndicator|classElementSetterIndicator
+classElementAccessMethod ::= classElementAccessMethodIndicator LPAREN funcAssignment RPAREN
+{
+  pin=2
+}
+classVarBeanType ::= "bean"
+{
+  mixin="ekz.psi.impl.LuaNamedElementImpl"
+  methods=[getNameIdentifier setName getName getPresentation]
+}
+classVarType ::= (classVarBeanType DOT idName)|idName
+classVarIndicator ::= publicIndicator|privateIndicator|packageIndicator|protectedIndicator
+classVarName ::= STRING
+{
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation getUnquotedText]
+}
+classVarDefinition ::= classVarIndicator (DOT classVarType)? LPAREN classVarName (COMMA value
+  (COMMA classElementAccessMethod)? (COMMA classElementAccessMethod)? )? RPAREN
+{
+  pin=3
+  stubClass="ekz.psi.stubs.LuaVarBeanStub"
+}
+//class method
+private methodIndicator ::= ".method"
+private publicClassMethodIndicator ::= publicIndicator methodIndicator
+private privateClassMethodIndicator ::= privateIndicator methodIndicator
+private packageClassMethodIndicator ::= packageIndicator methodIndicator
+private protectedClassMethodIndicator ::= protectedIndicator methodIndicator
+classMethodIndicator ::= publicClassMethodIndicator|privateClassMethodIndicator|packageClassMethodIndicator|
+protectedClassMethodIndicator
+classMethodName ::= STRING
+{
+	implements="ekz.psi.LuaNamedElement"
+	methods=[getNameIdentifier setName getName getPresentation getUnquotedText]
+}
+classMethodDefinition ::= classMethodIndicator LPAREN classMethodName (COMMA funcAssignment)? RPAREN
+{
+  pin=2
+}
+classElementDefinition ::= (innerClassDefinition|innerEnumDefinition|innerInterfaceDefinition|classMethodDefinition|
+classVarDefinition) (SEMI|COMMA)? {
+	mixin="ekz.psi.impl.LuaNamedElementImpl"
+  methods=[getNameIdentifier setName getName getPresentation]
+}
+
+classNameWithPath ::= STRING
+{
+	mixin="ekz.psi.impl.LuaNamedElementImpl"
+	methods=[getNameIdentifier setName getName getUnquotedText]
+}
+importIndicator ::= "import"
+importDefinition ::= importIndicator classNameWithPath
+{
+  pin=1
+}
+importList ::= importDefinition (importDefinition)*
+contextIndicator ::= "context"
+contextName ::= STRING
+contextParentName ::= STRING|NIL
+{
+	methods=[getUnquotedText]
+}
+contextDefinition ::= contextIndicator LPAREN contextName COMMA funcAssignment
+(COMMA contextParentName (COMMA boolVal)? )? RPAREN
+{
+  pin=2
+}
+classPackage ::= STRING {
+	mixin="ekz.psi.impl.LuaNamedElementImpl"
+	methods=[getNameIdentifier setName getName getUnquotedText]
+}
+classPackageIndicator ::= "package"
+classPackageDefinition ::= classPackageIndicator classPackage
+{
+  pin=2
+}
+beanName ::= STRING
+{
+  mixin="ekz.psi.impl.LuaNamedElementImpl"
+  methods=[getNameIdentifier setName getName getPresentation]
+}
+beanIndicator ::= "bean"
+beanDefinition ::= beanIndicator LPAREN beanName COMMA classNameWithPath (COMMA table (COMMA boolVal)?)? RPAREN
+{
+  pin=2
+}
+idName ::= ID
+{
+	implements="ekz.psi.LuaNamedElement"
+  mixin="ekz.psi.stubs.LuaStubPsiElement<ekz.psi.stubs.LuaGVarStub>"
+	stubClass="ekz.psi.stubs.LuaGVarStub"
+	methods=[isGlobal isLocal isFunctionAttribute getNameIdentifier setName getName getPresentation]
+}
+refBeanIndicator ::= "ref"
+refBeanCall ::= refBeanIndicator LPAREN beanName RPAREN
+{
+  pin=2
+}
+private changeableVarIdPart ::=(DOT idName)|tableIndex|funcParams|(COLON idName funcParams)
+private leftPartOfVarId ::= refBeanCall|(idName (tableIndex|funcParams)?)|EVAR
+varId ::= leftPartOfVarId changeableVarIdPart*
+private simpleVal ::=  (unaryOp|NOT)? (varId|STRING|NUMBER|boolVal|NIL|funcAssignment|table|ELLIPSIS)
+private valOperation ::= CONCAT|numericOperator|comparisonOperator|AND|OR
+private preValExpr ::= simpleVal (valOperation simpleVal)*
+private valExpr::= (preValExpr|((unaryOp|NOT)? LPAREN valExpr RPAREN changeableVarIdPart* ))(valOperation valExpr)*
+value ::= valExpr
+{
+  pin=1
+}
+values ::= value (COMMA value)*
+private leftVarAssignment ::= (varId|EVAR) (COMMA (varId|EVAR))*
+varAssignment ::= leftVarAssignment ASSIGN values
+{
+  pin=2
+}
+localVarAssignment ::= LOCAL leftVarAssignment (ASSIGN values)?
+{
+  pin=1
+	implements="ekz.psi.LuaNamedElement"
+  methods=[getNameIdentifier setName getName getPresentation]
+}
+boolVal ::= TRUE|FALSE
+
+doBlock ::= DO body? END
+{
+  pin=1
+}
+//function
+private funcBody ::= funcDefName funcAttributes body? END
+funcDef ::= FUNC funcBody
+{
+  pin=1
+}
+funcLocalDef ::= LOCAL FUNC funcBody {
+  pin=2
+}
+funcAttributes ::=LPAREN (((idName | EVAR) (COMMA (idName | EVAR))* (COMMA ELLIPSIS)?) | ELLIPSIS)? RPAREN
+funcAssignment ::= FUNC funcAttributes body? END
+{
+  pin=1
+}
+funcParams ::= (LPAREN values? (COMMA ELLIPSIS)? RPAREN) | STRING | table
+returnCondition ::= RETURN values?
+{
+  pin=1
+}
+funcDefName ::= (tableIndex|idName) (DOT (tableIndex|idName))* (COLON (idName|tableIndex))?
+{
+  mixin="ekz.psi.impl.LuaNamedElementImpl"
+  methods=[getNameIdentifier setName getName getPresentation]
+}
+//table
+table ::= LCURLY (ELLIPSIS|tableElement+)? RCURLY
+{
+  pin=1
+}
+tableElement ::= ((idName|(LBRACK value RBRACK)) ASSIGN)? value (SEMI|COMMA)?
+
+tableIndex::= (LBRACK !LBRACK value RBRACK)+
+//statements
+body ::= (chunk SEMI?)+
+ifCondition ::= value
+ifStatement ::= IF ifCondition THEN body? (elseIfStatement)* elseStatement? END
+{
+  pin=1
+}
+elseIfStatement ::= ELSEIF ifCondition THEN body?
+{
+  pin=1
+}
+elseStatement ::= ELSE body?
+{
+  pin=1
+}
+forCondition ::= idName ASSIGN value COMMA value (COMMA value)?
+forStatement ::= FOR (forCondition|forPCondition) doBlock
+{
+  pin=1
+}
+pairsIndicator ::= "pairs"|"ipairs"
+private pairsCondition ::= pairsIndicator LPAREN (value) RPAREN
+{
+  pin=1
+}
+nextIndicator ::= "next"
+private nextCondition ::= (nextIndicator COMMA varId (COMMA (varId|NIL))?)
+{
+  pin=1
+}
+forPCondition ::= (idName|EVAR) (COMMA (idName|EVAR))* IN (pairsCondition|nextCondition|varId)
+whileStatement ::= WHILE  value doBlock
+{
+  pin=1
+}
+repeatStatement ::= REPEAT body? UNTIL value
+{
+  pin=1
+}
+comparisonOperator ::=EQ | NE | GE | LE | GT | LT
+numericOperator ::= PLUS | MINUS | MULT | DIV | EXP | MOD
+unaryOp ::= MINUS | GETN

@@ -1,0 +1,127 @@
+<idea-plugin>
+    <id>ekz</id>
+    <name>Ekz lus sdk plugin</name>
+    <version>1.0</version>
+    <vendor email="ekzilit@gmail.com" url="---">no company</vendor>
+
+    <description> <![CDATA[
+    ------------------------plugin for ekz lua sdk----------------------
+    ]]>
+    </description>
+
+    <change-notes><![CDATA[
+    --------------------------------------------------------------------------------------------
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <extensionPoints>
+        <extensionPoint
+                interface="com.intellij.util.QueryExecutor" name="luaClassImplementationsSearch"/>
+        <extensionPoint
+                interface="com.intellij.util.QueryExecutor" name="luaClassElementImplementationsSearch"/>
+    </extensionPoints>
+    <extensions defaultExtensionNs="ekz">
+        <luaClassImplementationsSearch implementation="ekz.psi.search.LuaClassImplementationsSearcher"/>
+        <luaClassElementImplementationsSearch
+                implementation="ekz.psi.search.LuaClassElementImplementationsSearcher"/>
+    </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+
+        <applicationService serviceImplementation="ekz.psi.codestyle.LuaImportHelper" />
+
+        <fileType name="Lua file" implementationClass="ekz.LuaFileType" fieldName="INSTANCE"
+                  language="Lua" extensions="lua"/>
+        <lang.parserDefinition language="Lua" implementationClass="ekz.LuaParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Lua"
+                                       implementationClass="ekz.highlighter.LuaSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="ekz.openapi.options.LuaColorSettingsPage"/>
+        <annotator language="Lua" implementationClass="ekz.codeinsight.annotation.LuaAnnotator"/>
+        <stubElementTypeHolder class="ekz.psi.LuaTypes"/>
+        <stubIndex implementation="ekz.psi.stubs.index.LuaVarBeanIndex"/>
+        <stubIndex implementation="ekz.psi.stubs.index.LuaClassIndex"/>
+        <stubIndex implementation="ekz.psi.stubs.index.LuaParentIndex"/>
+        <stubIndex implementation="ekz.psi.stubs.index.LuaFullClassNameIndex"/>
+        <stubIndex implementation="ekz.psi.stubs.index.LuaGVarIndex"/>
+        <lang.refactoringSupport language="Lua"
+                                 implementationClass="ekz.refactoring.LuaRefactoringSupportProvider"/>
+        <completion.contributor language="Lua"
+                                implementationClass="ekz.codeinsight.completion.LuaCompletionContributor"/>
+        <lang.foldingBuilder language="Lua" implementationClass="ekz.codeinsight.folding.LuaFoldingBuilder"/>
+        <definitionsScopedSearch implementation="ekz.psi.search.LuaSearch"/>
+
+        <readWriteAccessDetector implementation="ekz.codeinsight.highlighting.LuaReadWriteAccessDetector" id="lua"/>
+
+        <findUsagesHandlerFactory implementation="ekz.find.usages.LuaFindUsagesHandlerFactory" id="lua"
+                                  order="last, before default"/>
+        <lang.findUsagesProvider language="Lua" implementationClass="ekz.find.usages.LuaFindUsagesProvider"/>
+
+        <defaultLiveTemplates file="/liveTemplates/lua"/>
+        <liveTemplateContext implementation="ekz.codeinsight.template.LuaForTemplateContextType"/>
+        <codeInsight.template.postfixTemplateProvider language="Lua"
+                                                      implementationClass="ekz.codeinsight.template.postfix.templates.LuaPostfixTemplateProvider"/>
+        <codeInsight.gotoSuper language="Lua" implementationClass="ekz.codeinsight.navigation.LuaGotoSuperHandler"/>
+        <codeInsight.lineMarkerProvider language="Lua"
+                                        implementationClass="ekz.codeinsight.daemon.LuaLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="Lua"
+                                        implementationClass="ekz.codeinsight.daemon.LuaRelatedItemMarkerProvider"/>
+
+        <lang.commenter language="Lua" implementationClass="ekz.LuaCommenter"/>
+
+        <lang.psiStructureViewFactory language="Lua" implementationClass="ekz.ide.LuaStructureViewFactory"/>
+
+        <lang.formatter language="Lua" implementationClass="ekz.psi.formatter.LuaFormattingModelBuilder"/>
+        <lineIndentProvider implementation="ekz.codeinsight.editor.actions.LuaLineIndentProvider"/>
+        <lang.braceMatcher language="Lua" implementationClass="ekz.codeinsight.highlighting.LuaPairedBraceMatcher"/>
+
+        <psi.referenceContributor implementation="ekz.psi.reference.LuaReferenceContributor"/>
+        <gotoTargetRendererProvider implementation="ekz.codeinsight.navigation.LuaGotoTargetRendererProvider"/>
+        <codeInsight.containerProvider implementation="ekz.codeinsight.LuaContainerProvider" id="lua"/>
+
+        <enterHandlerDelegate implementation="ekz.codeinsight.editor.actions.LuaEnterEndAfterUnmatchedBraceHandler"
+                              order="before afterUnmatchedBrace"/>
+        <enterHandlerDelegate
+                implementation="ekz.codeinsight.editor.actions.LuaEnterRepeatAfterUnmatchedBraceHandler"
+                order="before afterUnmatchedBrace"/>
+        <enterHandlerDelegate
+                implementation="ekz.codeinsight.editor.actions.LuaEnterCurlyAfterUnmatchedBraceHandler"
+                order="before afterUnmatchedBrace"/>
+        <createFromTemplateHandler implementation="ekz.ide.fileTemplates.LuaCreateClassFromTemplateHandler"/>
+        <createFromTemplateHandler implementation="ekz.ide.fileTemplates.LuaCreateContextFromTemplateHandler"/>
+        <defaultTemplatePropertiesProvider implementation="ekz.ide.fileTemplates.TemplatePackagePropertyProvider"/>
+
+        <moduleType id="LuaModule" implementationClass="ekz.module.LuaModuleType"/>
+        <moduleBuilder builderClass="ekz.module.LuaModuleBuilder"/>
+        <sdkType implementation="ekz.module.LuaSdkType"/>
+
+<!--        codestyle-->
+        <codeStyleSettingsProvider implementation="ekz.psi.codestyle.LuaCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider implementation="ekz.psi.codestyle.LuaLanguageCodeStyleSettingsProvider"/>
+
+        <lang.importOptimizer language="Lua" implementationClass="ekz.refactoring.LuaImportOptimizer"/>
+
+        <intentionAction>
+            <className>ekz.codeinsight.intention.CreateImportQuickFix</className>
+            <category>Lua/Imports</category>
+        </intentionAction>
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action id="NewLuaClass" class="ekz.ide.action.CreateClassAction">
+            <add-to-group group-id="NewGroup1" anchor="first"/>
+        </action>
+        <action id="NewLuaContext" class="ekz.ide.action.CreateContextAction">
+            <add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewLuaClass"/>
+        </action>
+    </actions>
+
+
+</idea-plugin>

@@ -1,0 +1,176 @@
+if a.dasda == a.dada then
+dasdasda()
+end
+
+classPackage "core.service"
+import "core.model.ResourceModel"
+import "core.model.PowerModel"
+local lvav_a,dada,dada = dadadad[1]
+colors = DowerBarColor[power.typeId] or sadas
+power.color.red, power.color.green, power.color.blue = colors.r, colors.g, colors.b
+if adas then
+	local lvava,dada,dada = dadadad[1]
+	local lvava,dada,dada = dadadad[1]
+	power.color.red, power.color.green, power.color.blue = colors.r, colors.g, colors.b
+elseif not power.color.red then
+	colors = PowerBarColor[power.typeId] or PowerBarColor["MANA"]
+	power.color.red, power.color.green, power.color.blue = colors.r, colors.g, colors.b
+end
+
+dasdasda.sd = aasdaf.dadad(dsadas.dada(), dsadasdas.dasdasd)
+dasdasda.sd = aasdaf(dasdas(), dadad, dsadas.daadda, dadasd())
+
+altPower.currentValue = UnitPower(UNIT_IDS.player, getPlayerAltPowerType())
+
+asdad("dadad"){
+    getAltPower = function(self)
+        local altPower = self:new("PowerModel")
+        altPower.currentValue = UnitPower(UNIT_IDS.player, getPlayerAltPowerType())
+        altPower.maxValue = UnitPowerMax(UNIT_IDS.player, getPlayerAltPowerType())
+        self:getPowerType(altPower, UNIT_IDS.player)
+        altPower.percentage = calculatePercentage(altPower.currentValue, altPower.maxValue)
+        return altPower
+    end;
+}
+
+
+class("ResourceService") {
+
+    getHealth = function(self, unitId)
+        local hp = self:new("ResourceModel")
+        hp.currentValue = UnitHealth(unitId)
+        hp.maxValue = UnitHealthMax(unitId)
+        hp.percentage = calculatePercentage(hp.currentValue, hp.maxValue)
+        return hp
+    end;
+
+
+    getPower = function(self, unitId)
+        local power = self:new("PowerModel")
+        power.currentValue = UnitPower(unitId)
+        power.maxValue = UnitPowerMax(unitId)
+        power.percentage = calculatePercentage(power.currentValue, power.maxValue)
+        self:getPowerType(power, unitId)
+        return power
+    end;
+
+    getPowerType = function(_, power, unitId)
+        power.typeId,
+        power.name,
+        power.color.red,
+        power.color.green,
+        power.color.blue = UnitPowerType(unitId)
+        local colors = PowerBarColor[power.name]
+        if colors then
+            power.color.red, power.color.green, power.color.blue = colors.r, colors.g, colors.b
+        elseif not power.color.red then
+            colors = PowerBarColor[power.typeId] or PowerBarColor["MANA"]
+            power.color.red, power.color.green, power.color.blue = colors.r, colors.g, colors.b
+        end
+    end;
+
+}
+
+dasdasd {}
+local var1 = dadasfaf
+local var1 = afafaf;
+asdasdada.dasdasd.asda("dasdasda"){}
+var1 = fafaf
+var1 = fafaf;
+var1 = 13123
+var2 = fdafasd:fafaff("fafaf")
+adadad("dadada"){
+	 getHealth = function(self, unitId)
+            local hp = self:new("ResourceModel")
+            hp.currentValue = UnitHealth(unitId)
+            hp.maxValue = UnitHealthMax(unitId)
+            hp.percentage = calculatePercentage(hp.currentValue, hp.maxValue)
+            return hp
+        end;
+
+	 getHealth = function(self, unitId)
+            local hp = self:new("ResourceModel")
+            hp.currentValue = UnitHealth(unitId)
+            hp.maxValue = UnitHealthMax(unitId)
+            hp.percentage = calculatePercentage(hp.currentValue, hp.maxValue)
+            return hp
+        end;
+}
+var = "dasdasda"
+var1 = 123123
+var1, var2 = fafaf
+var1, var2 = fafaf;
+var1 = {}
+var["dada"] = dadadad
+var1 = {
+	var1 = 2;
+	var2 =  function(adad)
+		dada = daada;
+	end,
+	var5 = asdasda(dada, adad);
+	var3 = {
+		 var1 = 312321;
+		 var2 = dasaf(daf);
+	};
+}
+local function dadada(...) end
+local function dadada(dasda,da,ddada,...) end
+local var1, var2 = fafaf
+local var1, var2 = fafaf;
+daffa:dadada()
+daasda.adafas()
+
+local var1 = function(fvar1)  end
+var1, var2 = function(fvar1)  end
+var1 = function(fvar1)
+	var1 = fafa
+	var2 = function(fvar1, fvar2)  end
+	fafafa(fsafasd,fasfa)
+end
+
+if a == a and saddas.asdasd.ada <= 3 then
+	asdada = dada
+	var1 = function(fvar1)
+		var1 = fafa
+		var2 = function(fvar1, fvar2)  end
+		fafafa(fsafasd,fasfa)
+	end
+	var1 = {}
+	var1 = {
+		var1 = 2;
+		var2 =  function(adad)
+			dada = daada;
+		end;
+		var5 = asdasda(dada, adad);
+		var3 = {
+			 var1 = 312321;
+			 var2 = dasaf(daf);
+		};
+	}
+	if not dsada.dasdas then
+		dada.adada()
+	end
+	for i=1, dasdasd.dad do
+		dada = add
+	end
+
+	while sadasd.asda == true do
+		dsdas.dada.asdad()
+	end
+	while sadasd.asda == true do
+		repeat
+			dasdas.dada = "dadadada"
+		until dadas.dfgasgag ~= false
+	end
+end
+for i =1, #adsdasd.dasd.asda do
+dada = adda
+end
+for i,v in ipairs(dasdasd.dasasd.adada) do
+ dadsada.dasdasda.daa()
+ dsadas = 1
+end
+for i,v in pairs(dasdasd.dasasd.adada) do
+ dadsada.dasdasda.daa()
+ dsadas = 1
+end
