@@ -1,2 +1,2 @@
 # Ekz-lua-sdk-plugin
-wow addon intellij idea plugin
+ekz lua sdk intellij idea plugin

@@ -42,50 +42,53 @@ import static ekz.highlighter.LuaSyntaxHighlighter.LOCAL_VAR;
 
 public class LuaAnnotator implements Annotator {
 
-  @Override
-  public void annotate(@NotNull final PsiElement psiElement, @NotNull final AnnotationHolder annotationHolder) {
-    if (psiElement instanceof LuaClassIndicator || psiElement instanceof LuaInnerClassIndicator ||
-        psiElement instanceof LuaInterfaceIndicator || psiElement instanceof LuaInnerInterfaceIndicator ||
-        psiElement instanceof LuaEnumIndicator || psiElement instanceof LuaInnerEnumIndicator ||
-        psiElement instanceof LuaClassVarIndicator || psiElement instanceof LuaClassMethodIndicator ||
-        psiElement instanceof LuaClassPackageIndicator || psiElement instanceof LuaImportIndicator ||
-        psiElement instanceof LuaContextIndicator || psiElement instanceof LuaPairsIndicator ||
-        psiElement instanceof LuaNextIndicator || psiElement instanceof LuaRefBeanIndicator ||
-        psiElement instanceof LuaBeanIndicator || psiElement instanceof LuaClassElementGetterIndicator ||
-        psiElement instanceof LuaClassElementSetterIndicator ||
-        (psiElement instanceof LuaIdName && ("this".equals(psiElement.getText()) || "super".equals(psiElement.getText())))) {
-      annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "all is fine)").textAttributes(KEYWORD);
-    } else if (psiElement instanceof LuaTableElement &&
-        !(";".equals(psiElement.getLastChild().getText()) || ",".equals(psiElement.getLastChild().getText())) &&
-        !isLastTableElement(psiElement)) {
-      annotationHolder.newAnnotation(HighlightSeverity.ERROR, "comma or semicolon expected to separate table elements");
-    } else if (psiElement instanceof LuaIdName) {
-      if (((LuaIdName) psiElement).isGlobal()) {
-        annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "global").textAttributes(GLOBAL_VAR);
-      } else if (((LuaIdName) psiElement).isFunctionAttribute()) {
-        annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "function").textAttributes(FUNC_PARAMS);
-      } else if (((LuaIdName) psiElement).isLocal()) {
-        annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "local").textAttributes(LOCAL_VAR);
-      }
-    } else if (psiElement instanceof LuaClassVarType && !classImportsHaveClassVarType((LuaClassVarType) psiElement)) {
-      annotationHolder.newAnnotation(HighlightSeverity.ERROR, "There is no import for " + psiElement.getText() + " type").withFix(new CreateImportQuickFix());
-    }
-  }
+	@Override
+	public void annotate(@NotNull final PsiElement psiElement, @NotNull final AnnotationHolder annotationHolder) {
+		if (psiElement instanceof LuaClassIndicator || psiElement instanceof LuaInnerClassIndicator ||
+				psiElement instanceof LuaInterfaceIndicator || psiElement instanceof LuaInnerInterfaceIndicator ||
+				psiElement instanceof LuaEnumIndicator || psiElement instanceof LuaInnerEnumIndicator ||
+				psiElement instanceof LuaClassVarIndicator || psiElement instanceof LuaClassMethodIndicator ||
+				psiElement instanceof LuaClassPackageIndicator || psiElement instanceof LuaImportIndicator ||
+				psiElement instanceof LuaContextIndicator || psiElement instanceof LuaPairsIndicator ||
+				psiElement instanceof LuaNextIndicator || psiElement instanceof LuaRefBeanIndicator ||
+				psiElement instanceof LuaBeanIndicator || psiElement instanceof LuaClassElementGetterIndicator ||
+				psiElement instanceof LuaClassElementSetterIndicator || (psiElement instanceof LuaIdName &&
+				("this".equals(psiElement.getText()) || "super".equals(psiElement.getText())))) {
+			annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Keyword").textAttributes(KEYWORD).create();
+		} else if (psiElement instanceof LuaTableElement &&
+				!(";".equals(psiElement.getLastChild().getText()) || ",".equals(psiElement.getLastChild().getText())) &&
+				!isLastTableElement(psiElement)) {
+			annotationHolder.newAnnotation(HighlightSeverity.ERROR, "Comma or semicolon expected to separate table elements")
+					.create();
+		} else if (psiElement instanceof LuaIdName) {
+			if (((LuaIdName) psiElement).isGlobal()) {
+				annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Global").textAttributes(GLOBAL_VAR).create();
+			} else if (((LuaIdName) psiElement).isFunctionAttribute()) {
+				annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Function attribute").textAttributes(FUNC_PARAMS).create();
+			} else if (((LuaIdName) psiElement).isLocal()) {
+				annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Local").textAttributes(LOCAL_VAR).create();
+			}
+		} else if (psiElement instanceof LuaClassVarType && !classImportsHaveClassVarType((LuaClassVarType) psiElement)) {
+			annotationHolder.newAnnotation(HighlightSeverity.ERROR, "There is no import for " + psiElement.getText() + " type")
+					.withFix(new CreateImportQuickFix()).create();
+		}
+	}
 
-  private boolean classImportsHaveClassVarType(@NotNull LuaClassVarType psiElement) {
-    return PsiTreeUtil.findChildrenOfType(psiElement.getContainingFile(), LuaImportDefinition.class)
-        .stream()
-        .anyMatch(importDefinition -> Objects.nonNull(importDefinition.getClassNameWithPath()) && psiElement.getIdName()
-            .getText()
-            .equals(LuaClassHelper.getClassNameFromFullPath(importDefinition.getClassNameWithPath().getUnquotedText())));
-  }
+	private boolean classImportsHaveClassVarType(@NotNull LuaClassVarType psiElement) {
+		return PsiTreeUtil.findChildrenOfType(psiElement.getContainingFile(), LuaImportDefinition.class)
+				.stream()
+				.anyMatch(importDefinition -> Objects.nonNull(importDefinition.getClassNameWithPath()) && psiElement.getIdName()
+						.getText()
+						.equals(LuaClassHelper.getClassNameFromFullPath(
+								importDefinition.getClassNameWithPath().getUnquotedText())));
+	}
 
-  private boolean isLastTableElement(PsiElement tableElement) {
-    final var table = tableElement.getParent();
-    var tableElements = Arrays.stream(table.getChildren())
-        .filter(LuaTableElement.class::isInstance)
-        .sorted(Comparator.comparing(PsiElement::getStartOffsetInParent))
-        .collect(Collectors.toList());
-    return tableElements.get(tableElements.size() - 1).getStartOffsetInParent() == tableElement.getStartOffsetInParent();
-  }
+	private boolean isLastTableElement(PsiElement tableElement) {
+		final var table = tableElement.getParent();
+		var tableElements = Arrays.stream(table.getChildren())
+				.filter(LuaTableElement.class::isInstance)
+				.sorted(Comparator.comparing(PsiElement::getStartOffsetInParent))
+				.collect(Collectors.toList());
+		return tableElements.get(tableElements.size() - 1).getStartOffsetInParent() == tableElement.getStartOffsetInParent();
+	}
 }

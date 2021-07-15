@@ -1,6 +1,6 @@
 <idea-plugin>
     <id>ekz</id>
-    <name>Ekz lus sdk plugin</name>
+    <name>Ekz Lua Sdk</name>
     <version>1.0</version>
     <vendor email="ekzilit@gmail.com" url="---">no company</vendor>
 
