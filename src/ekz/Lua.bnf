@@ -216,6 +216,7 @@ classVarName ::= STRING
 	implements="ekz.psi.LuaNamedElement"
 	methods=[getNameIdentifier setName getName getPresentation getUnquotedText]
 }
+enumValues ::= "values" ASSIGN table
 classVarDefinition ::= classVarIndicator (DOT classVarType)? LPAREN classVarName (COMMA value
   (COMMA classElementAccessMethod)? (COMMA classElementAccessMethod)? )? RPAREN
 {
@@ -240,7 +241,7 @@ classMethodDefinition ::= classMethodIndicator LPAREN classMethodName (COMMA fun
   pin=2
 }
 classElementDefinition ::= (innerClassDefinition|innerEnumDefinition|innerInterfaceDefinition|classMethodDefinition|
-classVarDefinition) (SEMI|COMMA)? {
+classVarDefinition|enumValues) (SEMI|COMMA)? {
 	mixin="ekz.psi.impl.LuaNamedElementImpl"
   methods=[getNameIdentifier setName getName getPresentation]
 }
