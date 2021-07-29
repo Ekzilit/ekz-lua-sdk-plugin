@@ -7,16 +7,16 @@ import ekz.psi.stubs.StubKeys;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaGVarIndex extends StringStubIndexExtension<LuaIdName> {
-  public static final LuaGVarIndex INSTANCE = new LuaGVarIndex();
+	public static final LuaGVarIndex INSTANCE = new LuaGVarIndex();
 
-  @NotNull
-  @Override
-  public StubIndexKey<String, LuaIdName> getKey() {
-    return StubKeys.GLOBAL_VAR;
-  }
+	@NotNull
+	@Override
+	public StubIndexKey<String, LuaIdName> getKey() {
+		return StubKeys.GLOBAL_VAR;
+	}
 
-  @Override
-  public int getVersion() {
-    return 1;
-  }
+	@Override
+	public int getVersion() {
+		return 1;
+	}
 }

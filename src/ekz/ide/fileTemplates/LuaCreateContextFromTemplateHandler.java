@@ -13,40 +13,40 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class LuaCreateContextFromTemplateHandler implements CreateFromTemplateHandler {
-  @Override
-  public boolean handlesTemplate(@NotNull FileTemplate template) {
-    return "LuaContext".equals(template.getName());
-  }
+	@Override
+	public boolean handlesTemplate(@NotNull FileTemplate template) {
+		return "LuaContext".equals(template.getName());
+	}
 
-  @NotNull
-  @Override
-  public PsiElement createFromTemplate(@NotNull Project project, @NotNull PsiDirectory directory, String fileName,
-                                       @NotNull FileTemplate template, @NotNull String templateText,
-                                       @NotNull Map<String, Object> props) throws IncorrectOperationException {
-    final var name = "myContext.lua";
-    var psiFile = PsiFileFactory.getInstance(project).createFileFromText(name, LuaFileType.INSTANCE, templateText);
-    psiFile.setName(props.get("originalFileName") + ".lua");
-    return directory.add(psiFile);
-  }
+	@NotNull
+	@Override
+	public PsiElement createFromTemplate(@NotNull Project project, @NotNull PsiDirectory directory, String fileName,
+										 @NotNull FileTemplate template, @NotNull String templateText,
+										 @NotNull Map<String, Object> props) throws IncorrectOperationException {
+		final var name = "myContext.lua";
+		var psiFile = PsiFileFactory.getInstance(project).createFileFromText(name, LuaFileType.INSTANCE, templateText);
+		psiFile.setName(props.get("originalFileName") + ".lua");
+		return directory.add(psiFile);
+	}
 
-  @Override
-  public boolean canCreate(@NotNull PsiDirectory[] dirs) {
-    return false;
-  }
+	@Override
+	public boolean canCreate(@NotNull PsiDirectory[] dirs) {
+		return false;
+	}
 
-  @Override
-  public boolean isNameRequired() {
-    return false;
-  }
+	@Override
+	public boolean isNameRequired() {
+		return false;
+	}
 
-  @NotNull
-  @Override
-  public String getErrorMessage() {
-    return "Some error in file creation happens";
-  }
+	@NotNull
+	@Override
+	public String getErrorMessage() {
+		return "Some error in file creation happens";
+	}
 
-  @Override
-  public void prepareProperties(@NotNull Map<String, Object> props) {
+	@Override
+	public void prepareProperties(@NotNull Map<String, Object> props) {
 
-  }
+	}
 }

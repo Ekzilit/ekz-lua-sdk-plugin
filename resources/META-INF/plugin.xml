@@ -82,7 +82,7 @@
         <lang.braceMatcher language="Lua" implementationClass="ekz.codeinsight.highlighting.LuaPairedBraceMatcher"/>
 
         <psi.referenceContributor implementation="ekz.psi.reference.LuaReferenceContributor"/>
-        <gotoTargetRendererProvider implementation="ekz.codeinsight.navigation.LuaGotoTargetRendererProvider"/>
+        <gotoTargetPresentationProvider implementation="ekz.codeinsight.navigation.LuaGotoTargetPresentationProvider"/>
         <codeInsight.containerProvider implementation="ekz.codeinsight.LuaContainerProvider" id="lua"/>
 
         <enterHandlerDelegate implementation="ekz.codeinsight.editor.actions.LuaEnterEndAfterUnmatchedBraceHandler"
@@ -114,13 +114,15 @@
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+<!--TODO
+        &lt;!&ndash; Add your actions here &ndash;&gt;
         <action id="NewLuaClass" class="ekz.ide.action.CreateClassAction">
             <add-to-group group-id="NewGroup1" anchor="first"/>
         </action>
         <action id="NewLuaContext" class="ekz.ide.action.CreateContextAction">
             <add-to-group group-id="NewGroup1" anchor="after" relative-to-action="NewLuaClass"/>
         </action>
+-->
     </actions>
 
 

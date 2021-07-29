@@ -13,29 +13,29 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreateImportQuickFix extends BaseElementAtCaretIntentionAction {
 
-  @Nls(capitalization = Nls.Capitalization.Sentence)
-  @NotNull
-  @Override
-  public String getFamilyName() {
-    return "Imports";
-  }
+	@Nls(capitalization = Nls.Capitalization.Sentence)
+	@NotNull
+	@Override
+	public String getFamilyName() {
+		return "Imports";
+	}
 
-  @NotNull
-  @Override
-  public String getText() {
-    return "Create import";
-  }
+	@NotNull
+	@Override
+	public String getText() {
+		return "Create import";
+	}
 
-  @Override
-  public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
-    return true;
-  }
+	@Override
+	public boolean isAvailable(@NotNull Project project, Editor editor, @NotNull PsiElement element) {
+		return true;
+	}
 
-  @Override
-  public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
-    var luaImportHelper = ServiceManager.getService(LuaImportHelper.class);
-    ApplicationManager.getApplication()
-        .invokeLater(() -> luaImportHelper.addImport(element.getContainingFile(), editor, element.getText()));
-  }
+	@Override
+	public void invoke(@NotNull Project project, Editor editor, @NotNull PsiElement element) throws IncorrectOperationException {
+		var luaImportHelper = ApplicationManager.getApplication().getService(LuaImportHelper.class);
+		ApplicationManager.getApplication()
+				.invokeLater(() -> luaImportHelper.addImport(element.getContainingFile(), editor, element.getText()));
+	}
 
 }

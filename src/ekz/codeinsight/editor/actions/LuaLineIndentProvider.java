@@ -40,94 +40,91 @@ import static ekz.codeinsight.editor.actions.LuaLineIndentProvider.LuaLikeElemen
 import static ekz.codeinsight.editor.actions.LuaLineIndentProvider.LuaLikeElement.Whitespace;
 
 public class LuaLineIndentProvider implements LineIndentProvider {
-  private static final HashMap<IElementType, SyntaxElement> SYNTAX_MAP = new HashMap<>();
+	private static final HashMap<IElementType, SyntaxElement> SYNTAX_MAP = new HashMap<>();
 
-  static {
-    SYNTAX_MAP.put(TokenType.WHITE_SPACE, Whitespace);
-    SYNTAX_MAP.put(LuaTypes.SEMI, Semicolon);
-    SYNTAX_MAP.put(LuaTypes.LCURLY, BlockOpeningBrace);
-    SYNTAX_MAP.put(LuaTypes.RCURLY, BlockClosingBrace);
-    SYNTAX_MAP.put(LuaTypes.LBRACK, ArrayOpeningBracket);
-    SYNTAX_MAP.put(LuaTypes.RBRACK, ArrayClosingBracket);
-    SYNTAX_MAP.put(LuaTypes.RPAREN, RightParenthesis);
-    SYNTAX_MAP.put(LuaTypes.LPAREN, LeftParenthesis);
-    SYNTAX_MAP.put(LuaTypes.COLON, Colon);
-    SYNTAX_MAP.put(LuaTypes.IF, IfKeyword);
-    SYNTAX_MAP.put(LuaTypes.THEN, ThenKeyword);
-    SYNTAX_MAP.put(LuaTypes.WHILE, IfKeyword);
-    SYNTAX_MAP.put(LuaTypes.ELSE, ElseKeyword);
-    SYNTAX_MAP.put(LuaTypes.ELSEIF, ElseIfKeyword);
-    SYNTAX_MAP.put(LuaTypes.FOR, ForKeyword);
-    SYNTAX_MAP.put(LuaTypes.REPEAT, RepeatKeyword);
-    SYNTAX_MAP.put(LuaTypes.UNTIL, UntilKeyword);
-    SYNTAX_MAP.put(LuaTypes.FUNC, FunctionKeyword);
-    SYNTAX_MAP.put(LuaTypes.DO, DoKeyword);
-    SYNTAX_MAP.put(LuaTypes.END, EndKeyword);
-    SYNTAX_MAP.put(LuaTypes.COMMA, Comma);
-    /*        SYNTAX_MAP.put(JavaTokenType.END_OF_LINE_COMMENT, LineComment);*/
-  }
+	static {
+		SYNTAX_MAP.put(TokenType.WHITE_SPACE, Whitespace);
+		SYNTAX_MAP.put(LuaTypes.SEMI, Semicolon);
+		SYNTAX_MAP.put(LuaTypes.LCURLY, BlockOpeningBrace);
+		SYNTAX_MAP.put(LuaTypes.RCURLY, BlockClosingBrace);
+		SYNTAX_MAP.put(LuaTypes.LBRACK, ArrayOpeningBracket);
+		SYNTAX_MAP.put(LuaTypes.RBRACK, ArrayClosingBracket);
+		SYNTAX_MAP.put(LuaTypes.RPAREN, RightParenthesis);
+		SYNTAX_MAP.put(LuaTypes.LPAREN, LeftParenthesis);
+		SYNTAX_MAP.put(LuaTypes.COLON, Colon);
+		SYNTAX_MAP.put(LuaTypes.IF, IfKeyword);
+		SYNTAX_MAP.put(LuaTypes.THEN, ThenKeyword);
+		SYNTAX_MAP.put(LuaTypes.WHILE, IfKeyword);
+		SYNTAX_MAP.put(LuaTypes.ELSE, ElseKeyword);
+		SYNTAX_MAP.put(LuaTypes.ELSEIF, ElseIfKeyword);
+		SYNTAX_MAP.put(LuaTypes.FOR, ForKeyword);
+		SYNTAX_MAP.put(LuaTypes.REPEAT, RepeatKeyword);
+		SYNTAX_MAP.put(LuaTypes.UNTIL, UntilKeyword);
+		SYNTAX_MAP.put(LuaTypes.FUNC, FunctionKeyword);
+		SYNTAX_MAP.put(LuaTypes.DO, DoKeyword);
+		SYNTAX_MAP.put(LuaTypes.END, EndKeyword);
+		SYNTAX_MAP.put(LuaTypes.COMMA, Comma);
+		/*        SYNTAX_MAP.put(JavaTokenType.END_OF_LINE_COMMENT, LineComment);*/
+	}
 
-  @Nullable
-  @Override
-  public String getLineIndent(@NotNull Project project, @NotNull Editor editor, @Nullable Language language,
-                              int offset) {
-    //enter handling
+	@Nullable
+	@Override
+	public String getLineIndent(@NotNull Project project, @NotNull Editor editor, @Nullable Language language, int offset) {
+		//enter handling
 
         /*         position.findLeftParenthesisBackwardsSkippingNestedWithPredicate(
               LeftParenthesis,
               RightParenthesis,
               self -> self.isAtAnyOf(BlockClosingBrace, BlockOpeningBrace, Semicolon)).isAt(LeftParenthesis)*/
-    /* return myFactory.createIndentCalculator(NONE, position -> position.findStartOf(BlockComment));*/
+		/* return myFactory.createIndentCalculator(NONE, position -> position.findStartOf(BlockComment));*/
 
-    var baseLineOffsetCalculator = LuaIndentCalculator.LINE_AFTER;
-    var indent = Indent.getNoneIndent();
-    if (getPosition(editor, offset).before()
-        .isAtAnyOf(BlockOpeningBrace, RepeatKeyword, ThenKeyword, DoKeyword, ElseKeyword)) {
-      baseLineOffsetCalculator = LuaIndentCalculator.LINE_BEFORE;
-      indent = Indent.getNormalIndent();
-    } else if (getPosition(editor, offset).before().isAt(EndKeyword)) {
-      baseLineOffsetCalculator = LuaIndentCalculator.LINE_BEFORE;
-    } else if (getPosition(editor, offset).after().isAtAnyOf(EndKeyword, UntilKeyword, ElseKeyword, ElseIfKeyword)) {
-      indent = Indent.getNormalIndent();
-    } else if (getPosition(editor, offset).before().isAt(RightParenthesis) &&
-        isBeforeFunctionAttributes(editor, offset)) {
-      indent = Indent.getNormalIndent();
-      baseLineOffsetCalculator = LuaIndentCalculator.LINE_BEFORE;
-    } else if (getPosition(editor, offset).after().isAtAnyOf(BlockClosingBrace)) {
-      indent = Indent.getNormalIndent();
-    }
-    var indentCalculator = new LuaIndentCalculator(project, editor, baseLineOffsetCalculator, indent);
-    return indentCalculator.getIndentString(language, getPosition(editor, offset - 1));
-    /*        getPosition(editor, offset).before().before().before().before().myIterator.getTokenType()*/
-  }
+		var baseLineOffsetCalculator = LuaIndentCalculator.LINE_AFTER;
+		var indent = Indent.getNoneIndent();
+		if (getPosition(editor, offset).before()
+				.isAtAnyOf(BlockOpeningBrace, RepeatKeyword, ThenKeyword, DoKeyword, ElseKeyword)) {
+			baseLineOffsetCalculator = LuaIndentCalculator.LINE_BEFORE;
+			indent = Indent.getNormalIndent();
+		} else if (getPosition(editor, offset).before().isAt(EndKeyword)) {
+			baseLineOffsetCalculator = LuaIndentCalculator.LINE_BEFORE;
+		} else if (getPosition(editor, offset).after().isAtAnyOf(EndKeyword, UntilKeyword, ElseKeyword, ElseIfKeyword)) {
+			indent = Indent.getNormalIndent();
+		} else if (getPosition(editor, offset).before().isAt(RightParenthesis) && isBeforeFunctionAttributes(editor, offset)) {
+			indent = Indent.getNormalIndent();
+			baseLineOffsetCalculator = LuaIndentCalculator.LINE_BEFORE;
+		} else if (getPosition(editor, offset).after().isAtAnyOf(BlockClosingBrace)) {
+			indent = Indent.getNormalIndent();
+		}
+		var indentCalculator = new LuaIndentCalculator(project, editor, baseLineOffsetCalculator, indent);
+		return indentCalculator.getIndentString(language, getPosition(editor, offset - 1));
+		/*        getPosition(editor, offset).before().before().before().before().myIterator.getTokenType()*/
+	}
 
-  private boolean isBeforeFunctionAttributes(@NotNull final Editor editor, final int offset) {
-    final var position = getPosition(editor, offset);
-    position.moveBeforeParentheses(LeftParenthesis, RightParenthesis);
-    return position.isAt(FunctionKeyword);
-  }
+	private boolean isBeforeFunctionAttributes(@NotNull final Editor editor, final int offset) {
+		final var position = getPosition(editor, offset);
+		position.moveBeforeParentheses(LeftParenthesis, RightParenthesis);
+		return position.isAt(FunctionKeyword);
+	}
 
-  @Override
-  public boolean isSuitableFor(@Nullable Language language) {
-    return language.isKindOf(Lua.INSTANCE);
-  }
+	@Override
+	public boolean isSuitableFor(@Nullable Language language) {
+		return language.isKindOf(Lua.INSTANCE);
+	}
 
-  public SemanticEditorPosition getPosition(@NotNull Editor editor, int offset) {
-    return SemanticEditorPosition.createEditorPosition((EditorEx) editor, offset, this::getIteratorAtPosition,
-        this::mapType);
-  }
+	public SemanticEditorPosition getPosition(@NotNull Editor editor, int offset) {
+		return SemanticEditorPosition.createEditorPosition(editor, offset, this::getIteratorAtPosition, this::mapType);
+	}
 
-  @NotNull
-  protected HighlighterIterator getIteratorAtPosition(@NotNull EditorEx editor, int offset) {
-    return editor.getHighlighter().createIterator(offset);
-  }
+	@NotNull
+	protected HighlighterIterator getIteratorAtPosition(@NotNull Editor editor, int offset) {
+		return editor.getHighlighter().createIterator(offset);
+	}
 
-  @Nullable
-  protected SyntaxElement mapType(@NotNull IElementType tokenType) {
-    return SYNTAX_MAP.get(tokenType);
-  }
+	@Nullable
+	protected SyntaxElement mapType(@NotNull IElementType tokenType) {
+		return SYNTAX_MAP.get(tokenType);
+	}
 
-  public enum LuaLikeElement implements SyntaxElement {
-    Whitespace, Semicolon, BlockOpeningBrace, BlockClosingBrace, ArrayOpeningBracket, ArrayClosingBracket, RightParenthesis, LeftParenthesis, Colon, ElseIfKeyword, ElseKeyword, IfKeyword, ThenKeyword, ForKeyword, RepeatKeyword, UntilKeyword, DoKeyword, Comma, EndKeyword, FunctionKeyword
-  }
+	public enum LuaLikeElement implements SyntaxElement {
+		Whitespace, Semicolon, BlockOpeningBrace, BlockClosingBrace, ArrayOpeningBracket, ArrayClosingBracket, RightParenthesis, LeftParenthesis, Colon, ElseIfKeyword, ElseKeyword, IfKeyword, ThenKeyword, ForKeyword, RepeatKeyword, UntilKeyword, DoKeyword, Comma, EndKeyword, FunctionKeyword
+	}
 }

@@ -1,6 +1,5 @@
 package ekz.psi.reference;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementResolveResult;
@@ -14,26 +13,27 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class LuaBeanElementReference extends PsiReferenceBase<LuaClassVarBeanType> implements PsiPolyVariantReference {
-  private Logger logger = Logger.getInstance(LuaBeanElementReference.class);
+	private Logger logger = Logger.getLogger(LuaBeanElementReference.class.getName());
 
-  public LuaBeanElementReference(@NotNull final LuaClassVarBeanType element, final TextRange rangeInElement) {
-    super(element, rangeInElement);
-  }
+	public LuaBeanElementReference(@NotNull final LuaClassVarBeanType element, final TextRange rangeInElement) {
+		super(element, rangeInElement);
+	}
 
-  @NotNull
-  @Override
-  public ResolveResult[] multiResolve(final boolean b) {
-    final var valueBeanId = ((LuaClassVarDefinition) myElement.getParent().getParent()).getValue();
-    var beanId = Objects.nonNull(valueBeanId) ? valueBeanId : ((LuaClassVarDefinition) myElement.getParent()
-        .getParent()).getClassVarName();
+	@NotNull
+	@Override
+	public ResolveResult[] multiResolve(final boolean b) {
+		final var valueBeanId = ((LuaClassVarDefinition) myElement.getParent().getParent()).getValue();
+		var beanId = Objects.nonNull(valueBeanId) ? valueBeanId : ((LuaClassVarDefinition) myElement.getParent()
+				.getParent()).getClassVarName();
 
-    var beans = LuaContextHelper.getBeansByBeanId(beanId);
+		var beans = LuaContextHelper.getBeansByBeanId(beanId);
 
-    if (!beans.isEmpty()) {
-      return beans.stream().map(PsiElementResolveResult::new).toArray(ResolveResult[]::new);
-    }
+		if (!beans.isEmpty()) {
+			return beans.stream().map(PsiElementResolveResult::new).toArray(ResolveResult[]::new);
+		}
 
 /*
     var fileList = LuaContextHelper.getCurrentModuleContext(myElement);
@@ -57,21 +57,21 @@ public class LuaBeanElementReference extends PsiReferenceBase<LuaClassVarBeanTyp
 */
 
 
-    return new ResolveResult[0];
-  }
+		return new ResolveResult[0];
+	}
 
-  @Nullable
-  @Override
-  public PsiElement resolve() {
-    var resolveResults = multiResolve(false);
-    return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
-  }
+	@Nullable
+	@Override
+	public PsiElement resolve() {
+		var resolveResults = multiResolve(false);
+		return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
+	}
 
-  @NotNull
-  @Override
-  public Object[] getVariants() {
-    return new Object[0];
-  }
+	@NotNull
+	@Override
+	public Object[] getVariants() {
+		return new Object[0];
+	}
 
 /*
   @Override

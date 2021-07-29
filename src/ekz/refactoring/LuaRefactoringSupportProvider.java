@@ -6,12 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LuaRefactoringSupportProvider extends RefactoringSupportProvider {
-  @Override
-  public boolean isMemberInplaceRenameAvailable(@NotNull final PsiElement element, @Nullable final PsiElement context) {
+	@Override
+	public boolean isMemberInplaceRenameAvailable(@NotNull final PsiElement element, @Nullable final PsiElement context) {
 	/*	if (element instanceof TocSourceFile)
 		{
 			return true;
 		}*/
-    return super.isMemberInplaceRenameAvailable(element, context);
-  }
+		return super.isMemberInplaceRenameAvailable(element, context);
+	}
 }

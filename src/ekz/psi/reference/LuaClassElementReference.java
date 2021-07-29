@@ -12,31 +12,31 @@ import org.jetbrains.annotations.Nullable;
 
 public class LuaClassElementReference extends PsiReferenceBase<LuaTableElement> implements PsiPolyVariantReference {
 
-  public LuaClassElementReference(@NotNull final LuaTableElement element, final TextRange rangeInElement) {
-    super(element, rangeInElement);
-  }
+	public LuaClassElementReference(@NotNull final LuaTableElement element, final TextRange rangeInElement) {
+		super(element, rangeInElement);
+	}
 
-  @NotNull
-  @Override
-  public ResolveResult[] multiResolve(final boolean b) {
-    return new ResolveResult[0];
-  }
+	@NotNull
+	@Override
+	public ResolveResult[] multiResolve(final boolean b) {
+		return new ResolveResult[0];
+	}
 
-  @Nullable
-  @Override
-  public PsiElement resolve() {
-    ResolveResult[] resolveResults = multiResolve(false);
-    return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
-  }
+	@Nullable
+	@Override
+	public PsiElement resolve() {
+		ResolveResult[] resolveResults = multiResolve(false);
+		return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
+	}
 
-  @NotNull
-  @Override
-  public Object[] getVariants() {
-    return new Object[0];
-  }
+	@NotNull
+	@Override
+	public Object[] getVariants() {
+		return new Object[0];
+	}
 
-  @Override
-  public PsiElement handleElementRename(@NotNull final String newElementName) throws IncorrectOperationException {
-    return myElement;// myElement.setName(newElementName);
-  }
+	@Override
+	public PsiElement handleElementRename(@NotNull final String newElementName) throws IncorrectOperationException {
+		return myElement;// myElement.setName(newElementName);
+	}
 }

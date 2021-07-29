@@ -20,68 +20,68 @@ import ekz.psi.LuaTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaParserDefinition implements ParserDefinition {
-  public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-  public static final TokenSet COMMENTS = TokenSet.create(LuaTypes.SHORT_COMMENT, LuaTypes.BLOCK_COMMENT);
+	public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
+	public static final TokenSet COMMENTS = TokenSet.create(LuaTypes.SHORT_COMMENT, LuaTypes.BLOCK_COMMENT);
 
-  public static final IStubFileElementType FILE = new IStubFileElementType(Lua.INSTANCE);
+	public static final IStubFileElementType FILE = new IStubFileElementType(Lua.INSTANCE);
 
-  public static IElementType createType(final String typeName) {
-    if ("CLASS".equals(typeName)) {
-      return LuaElementType.LUA_CLASS;
-    } else if ("ID_NAME".equals(typeName)) {
-      return LuaElementType.LUA_GVAR;
-    } else if ("CLASS_VAR_DEFINITION".equals(typeName)) {
-      return LuaElementType.LUA_VAR_BEAN;
-    } else {
-      return new LuaElementType(typeName);
-    }
-  }
+	public static IElementType createType(final String typeName) {
+		if ("CLASS".equals(typeName)) {
+			return LuaElementType.LUA_CLASS;
+		} else if ("ID_NAME".equals(typeName)) {
+			return LuaElementType.LUA_GVAR;
+		} else if ("CLASS_VAR_DEFINITION".equals(typeName)) {
+			return LuaElementType.LUA_VAR_BEAN;
+		} else {
+			return new LuaElementType(typeName);
+		}
+	}
 
-  @NotNull
-  @Override
-  public Lexer createLexer(final Project project) {
-    return new LuaLexerAdapter();
-  }
+	@NotNull
+	@Override
+	public Lexer createLexer(final Project project) {
+		return new LuaLexerAdapter();
+	}
 
-  @NotNull
-  public TokenSet getWhitespaceTokens() {
-    return WHITE_SPACES;
-  }
+	@NotNull
+	public TokenSet getWhitespaceTokens() {
+		return WHITE_SPACES;
+	}
 
-  public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
-    return SpaceRequirements.MAY;
-  }
+	public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
+		return SpaceRequirements.MAY;
+	}
 
-  @Override
-  public PsiParser createParser(final Project project) {
-    return new LuaParser();
-  }
+	@Override
+	public PsiParser createParser(final Project project) {
+		return new LuaParser();
+	}
 
-  @Override
-  public IFileElementType getFileNodeType() {
-    return FILE;
-  }
+	@Override
+	public IFileElementType getFileNodeType() {
+		return FILE;
+	}
 
-  @NotNull
-  @Override
-  public TokenSet getCommentTokens() {
-    return COMMENTS;
-  }
+	@NotNull
+	@Override
+	public TokenSet getCommentTokens() {
+		return COMMENTS;
+	}
 
-  @NotNull
-  @Override
-  public TokenSet getStringLiteralElements() {
-    return TokenSet.EMPTY;
-  }
+	@NotNull
+	@Override
+	public TokenSet getStringLiteralElements() {
+		return TokenSet.EMPTY;
+	}
 
-  @NotNull
-  @Override
-  public PsiElement createElement(final ASTNode astNode) {
-    return LuaTypes.Factory.createElement(astNode);
-  }
+	@NotNull
+	@Override
+	public PsiElement createElement(final ASTNode astNode) {
+		return LuaTypes.Factory.createElement(astNode);
+	}
 
-  @Override
-  public PsiFile createFile(final FileViewProvider fileViewProvider) {
-    return new LuaFile(fileViewProvider);
-  }
+	@Override
+	public PsiFile createFile(final FileViewProvider fileViewProvider) {
+		return new LuaFile(fileViewProvider);
+	}
 }

@@ -10,15 +10,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LuaStructureViewFactory implements PsiStructureViewFactory {
-  @Nullable
-  @Override
-  public StructureViewBuilder getStructureViewBuilder(@NotNull PsiFile psiFile) {
-    return new TreeBasedStructureViewBuilder() {
-      @NotNull
-      @Override
-      public StructureViewModel createStructureViewModel(@Nullable Editor editor) {
-        return new LuaStructureViewModel(psiFile, editor);
-      }
-    };
-  }
+	@Nullable
+	@Override
+	public StructureViewBuilder getStructureViewBuilder(@NotNull PsiFile psiFile) {
+		return new TreeBasedStructureViewBuilder() {
+			@NotNull
+			@Override
+			public StructureViewModel createStructureViewModel(@Nullable Editor editor) {
+				return new LuaStructureViewModel(psiFile, editor);
+			}
+		};
+	}
 }

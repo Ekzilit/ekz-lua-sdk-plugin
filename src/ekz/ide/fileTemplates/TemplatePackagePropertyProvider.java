@@ -9,13 +9,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Properties;
 
 public class TemplatePackagePropertyProvider implements DefaultTemplatePropertiesProvider {
-  @Override
-  public void fillProperties(@NotNull PsiDirectory directory, @NotNull Properties props) {
-    var projectFileIndex = ProjectRootManager.getInstance(directory.getProject()).getFileIndex();
-    var virtualFile = directory.getVirtualFile();
-    var packageName = projectFileIndex.getPackageNameByDirectory(virtualFile);
-    if (packageName != null) {
-      props.setProperty(FileTemplate.ATTRIBUTE_PACKAGE_NAME, packageName);
-    }
-  }
+	@Override
+	public void fillProperties(@NotNull PsiDirectory directory, @NotNull Properties props) {
+		var projectFileIndex = ProjectRootManager.getInstance(directory.getProject()).getFileIndex();
+		var virtualFile = directory.getVirtualFile();
+		var packageName = projectFileIndex.getPackageNameByDirectory(virtualFile);
+		if (packageName != null) {
+			props.setProperty(FileTemplate.ATTRIBUTE_PACKAGE_NAME, packageName);
+		}
+	}
 }

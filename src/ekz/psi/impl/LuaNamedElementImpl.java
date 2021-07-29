@@ -9,20 +9,20 @@ import ekz.psi.LuaNamedElement;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class LuaNamedElementImpl extends ASTWrapperPsiElement implements LuaNamedElement, NavigationItem {
-  public LuaNamedElementImpl(@NotNull final ASTNode node) {
-    super(node);
-  }
+	public LuaNamedElementImpl(@NotNull final ASTNode node) {
+		super(node);
+	}
 
-  @Override
-  public PsiReference getReference() {
-    var psiReferences = getReferences();
-    return psiReferences.length > 0 ? psiReferences[0] : null;
-  }
+	@Override
+	public PsiReference getReference() {
+		var psiReferences = getReferences();
+		return psiReferences.length > 0 ? psiReferences[0] : null;
+	}
 
-  @NotNull
-  @Override
-  public PsiReference[] getReferences() {
-    return ReferenceProvidersRegistry.getReferencesFromProviders(this);
-  }
+	@NotNull
+	@Override
+	public PsiReference[] getReferences() {
+		return ReferenceProvidersRegistry.getReferencesFromProviders(this);
+	}
 
 }

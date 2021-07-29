@@ -12,23 +12,23 @@ import org.jetbrains.annotations.Nullable;
 
 public class LuaNewClassPostfixTemplate extends PostfixTemplate {
 
-  public LuaNewClassPostfixTemplate(@Nullable PostfixTemplateProvider provider) {
-    super("new id", "new", "self:new(\"className\")", provider);
-  }
+	public LuaNewClassPostfixTemplate(@Nullable PostfixTemplateProvider provider) {
+		super("new id", "new", "self:new(\"className\")", provider);
+	}
 
-  @Override
-  public boolean isApplicable(@NotNull PsiElement context, @NotNull Document copyDocument, int newOffset) {
-    return context.getText().equals("new");
-  }
+	@Override
+	public boolean isApplicable(@NotNull PsiElement context, @NotNull Document copyDocument, int newOffset) {
+		return context.getText().equals("new");
+	}
 
-  @Override
-  public void expand(@NotNull PsiElement context, @NotNull Editor editor) {
-    editor.getDocument().deleteString(context.getTextRange().getStartOffset(), context.getTextRange().getEndOffset());
-    TemplateManager templateManager = TemplateManager.getInstance(context.getProject());
-    Template template = templateManager.createTemplate("", "");
-    template.setToReformat(true);
-    template.addTextSegment("self:new(\"\")");
-    templateManager.startTemplate(editor, template);
-    editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 2);
-  }
+	@Override
+	public void expand(@NotNull PsiElement context, @NotNull Editor editor) {
+		editor.getDocument().deleteString(context.getTextRange().getStartOffset(), context.getTextRange().getEndOffset());
+		TemplateManager templateManager = TemplateManager.getInstance(context.getProject());
+		Template template = templateManager.createTemplate("", "");
+		template.setToReformat(true);
+		template.addTextSegment("self:new(\"\")");
+		templateManager.startTemplate(editor, template);
+		editor.getCaretModel().moveToOffset(editor.getCaretModel().getOffset() - 2);
+	}
 }

@@ -7,8 +7,8 @@ import ekz.psi.LuaNamedElement;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaReferenceContributor extends PsiReferenceContributor {
-  @Override
-  public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
-    registrar.registerReferenceProvider(PlatformPatterns.psiElement(LuaNamedElement.class), new LuaReferenceProvider());
-  }
+	@Override
+	public void registerReferenceProviders(@NotNull PsiReferenceRegistrar registrar) {
+		registrar.registerReferenceProvider(PlatformPatterns.psiElement(LuaNamedElement.class), new LuaReferenceProvider());
+	}
 }

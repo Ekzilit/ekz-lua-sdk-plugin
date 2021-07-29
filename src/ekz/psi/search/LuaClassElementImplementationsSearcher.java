@@ -13,17 +13,17 @@ import static ekz.psi.search.LuaClassElementImplementationsSearchHelper.getEleme
 import static ekz.psi.search.LuaClassImplementationsSearchHelper.getChildren;
 
 public class LuaClassElementImplementationsSearcher extends QueryExecutorBase<LuaClassElementDefinition, LuaClassElementImplementationsSearch.SearchParameters> {
-  @Override
-  public void processQuery(@NotNull LuaClassElementImplementationsSearch.SearchParameters searchParameters,
-                           @NotNull Processor<? super LuaClassElementDefinition> processor) {
+	@Override
+	public void processQuery(@NotNull LuaClassElementImplementationsSearch.SearchParameters searchParameters,
+							 @NotNull Processor<? super LuaClassElementDefinition> processor) {
 
-    DumbService.getInstance(searchParameters.getClassElementDefinition().getProject()).runReadActionInSmartMode(() -> {
-      getChildren(((LuaClass) searchParameters.getClassElementDefinition().getParent().getParent()).getClassHeader()
-          .getClassName()).stream()
-          .map(classHeader -> getElementImplementation(searchParameters.getClassElementDefinition(), classHeader))
-          .filter(Objects::nonNull)
-          .forEach(processor::process);
-      return true;
-    });
-  }
+		DumbService.getInstance(searchParameters.getClassElementDefinition().getProject()).runReadActionInSmartMode(() -> {
+			getChildren(((LuaClass) searchParameters.getClassElementDefinition().getParent().getParent()).getClassHeader()
+					.getClassName()).stream()
+					.map(classHeader -> getElementImplementation(searchParameters.getClassElementDefinition(), classHeader))
+					.filter(Objects::nonNull)
+					.forEach(processor::process);
+			return true;
+		});
+	}
 }

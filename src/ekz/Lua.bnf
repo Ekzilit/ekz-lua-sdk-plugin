@@ -241,7 +241,7 @@ classMethodDefinition ::= classMethodIndicator LPAREN classMethodName (COMMA fun
   pin=2
 }
 classElementDefinition ::= (innerClassDefinition|innerEnumDefinition|innerInterfaceDefinition|classMethodDefinition|
-classVarDefinition|enumValues) (SEMI|COMMA)? {
+classVarDefinition|enumValues|ID) (SEMI|COMMA)? {
 	mixin="ekz.psi.impl.LuaNamedElementImpl"
   methods=[getNameIdentifier setName getName getPresentation]
 }

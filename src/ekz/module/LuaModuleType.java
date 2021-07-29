@@ -7,32 +7,32 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class LuaModuleType extends ModuleType<LuaModuleBuilder> {
-  public final static LuaModuleType INSTANCE = new LuaModuleType();
+	public final static LuaModuleType INSTANCE = new LuaModuleType();
 
-  private LuaModuleType() {
-    super("LuaModule");
-  }
+	private LuaModuleType() {
+		super("LuaModule");
+	}
 
-  @NotNull
-  @Override
-  public LuaModuleBuilder createModuleBuilder() {
-    return new LuaModuleBuilder();
-  }
+	@NotNull
+	@Override
+	public LuaModuleBuilder createModuleBuilder() {
+		return new LuaModuleBuilder();
+	}
 
-  @NotNull
-  @Override
-  public String getName() {
-    return "Lua";
-  }
+	@NotNull
+	@Override
+	public String getName() {
+		return "Lua";
+	}
 
-  @NotNull
-  @Override
-  public String getDescription() {
-    return "Lua wow addon development support";
-  }
+	@NotNull
+	@Override
+	public String getDescription() {
+		return "Lua wow addon development support";
+	}
 
-  @Override
-  public Icon getNodeIcon(boolean isOpened) {
-    return AllIcons.Nodes.Module;
-  }
+	@Override
+	public Icon getNodeIcon(boolean isOpened) {
+		return AllIcons.Nodes.Module;
+	}
 }

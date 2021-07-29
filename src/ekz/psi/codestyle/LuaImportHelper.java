@@ -23,97 +23,98 @@ import java.util.stream.Collectors;
 
 public class LuaImportHelper {
 
-  public void addImport(PsiFile file, Editor editor, String importName) {
+	public void addImport(PsiFile file, Editor editor, String importName) {
 
-    final var project = file.getProject();
-    final var foundCLasses = new ArrayList<>(
-        LuaClassIndex.INSTANCE.get(importName, project, GlobalSearchScope.allScope(project)));
+		final var project = file.getProject();
+		final var foundCLasses = new ArrayList<>(
+				LuaClassIndex.INSTANCE.get(importName, project, GlobalSearchScope.allScope(project)));
 
-    if (foundCLasses.size() > 1) {
-      final var step = new BaseListPopupStep<String>("Multiple classes found", foundCLasses.stream()
-          .map(luaClass -> (
-              PsiTreeUtil.getChildOfType(luaClass.getContainingFile().getFirstChild(), LuaClassPackageDefinition.class)
-                  .getClassPackage()
-                  .getUnquotedText() + "" + luaClass.getClassHeader().getClassName().getUnquotedText()))
-          .collect(Collectors.toList())) {
-        @Override
-        public PopupStep onChosen(final String selectedValue, boolean finalChoice) {
-          performAddImport(file, selectedValue);
-          return FINAL_CHOICE;
-        }
-      };
-      JBPopupFactory.getInstance().createListPopup(step).showInBestPositionFor(editor);
-    } else if (foundCLasses.size() == 1) {
-      performAddImport(file, foundCLasses);
-    }
-  }
+		if (foundCLasses.size() > 1) {
+			final var step = new BaseListPopupStep<String>("Multiple classes found", foundCLasses.stream()
+					.map(luaClass -> (PsiTreeUtil.getChildOfType(luaClass.getContainingFile().getFirstChild(),
+							LuaClassPackageDefinition.class).getClassPackage().getUnquotedText() + "." +
+							luaClass.getClassHeader().getClassName().getUnquotedText()))
+					.collect(Collectors.toList())) {
+				@Override
+				public PopupStep onChosen(final String selectedValue, boolean finalChoice) {
 
-  private void performAddImport(PsiFile file, List<LuaClass> foundCLasses) {
-    var importNameToCreate = foundCLasses.get(0).getClassPackageDefinition().getClassPackage().getUnquotedText() + "" +
-        foundCLasses.get(0).getClassHeader().getClassName().getUnquotedText();
-    performAddImport(file, importNameToCreate);
-  }
+					performAddImport(file, selectedValue);
+					return FINAL_CHOICE;
+				}
+			};
+			JBPopupFactory.getInstance().createListPopup(step).showInBestPositionFor(editor);
+		} else if (foundCLasses.size() == 1) {
+			performAddImport(file, foundCLasses);
+		}
+	}
 
-  private void performAddImport(PsiFile file, String importNameToCreate) {
-    WriteCommandAction.writeCommandAction(file.getProject()).run(() -> {
-      var importList = PsiTreeUtil.getChildOfType(file.getFirstChild(), LuaImportList.class);
-      var importToCreate = LuaElementFactory.createImportElement(file.getProject(), importNameToCreate);
-      if (Objects.nonNull(importList)) {
-        var importExists = isImportExist(importList, importNameToCreate);
-        if (!importExists) {
-          addImportToImportList(file, importList, importToCreate);
-        }
-      } else {
-        addImportList(file, importToCreate);
-      }
-    });
-  }
+	private void performAddImport(PsiFile file, List<LuaClass> foundCLasses) {
+		var importNameToCreate = foundCLasses.get(0).getClassPackageDefinition().getClassPackage().getUnquotedText() + "." +
+				foundCLasses.get(0).getClassHeader().getClassName().getUnquotedText();
+		performAddImport(file, importNameToCreate);
+	}
 
-  private void addImportList(PsiFile file, LuaImportDefinition importToCreate) {
-    var luaClass = file.getFirstChild();
-    final var packagePsi = PsiTreeUtil.getChildOfType(luaClass, LuaClassPackageDefinition.class);
-    if (Objects.nonNull(packagePsi)) {
-      luaClass.addAfter(LuaElementFactory.createImportListElement(file.getProject(), List.of(importToCreate)), packagePsi);
-      var importList = PsiTreeUtil.getChildOfType(luaClass, LuaImportList.class);
-      if (Objects.nonNull(importList)) {
-        luaClass.addBefore(LuaElementFactory.createCRLF(file.getProject()), importList);
-        var optimizers = LanguageImportStatements.INSTANCE.forFile(file);
-        optimizers.forEach(importOptimizer -> importOptimizer.processFile(file).run());
-      } else {
-        //TODO error importList was no created
-      }
-    } else {
-      //TODO error class has to have package
-    }
-  }
+	private void performAddImport(PsiFile file, String importNameToCreate) {
+		WriteCommandAction.writeCommandAction(file.getProject()).run(() -> {
+			var importList = PsiTreeUtil.getChildOfType(file.getFirstChild(), LuaImportList.class);
+			var importToCreate = LuaElementFactory.createImportElement(file.getProject(), importNameToCreate);
+			if (Objects.nonNull(importList)) {
+				var importExists = isImportExist(importList, importNameToCreate);
+				if (!importExists) {
+					addImportToImportList(file, importList, importToCreate);
+				}
+			} else {
+				addImportList(file, importToCreate);
+			}
+		});
+	}
 
-  private void optimizeImports(PsiFile file) {
-    var optimizers = LanguageImportStatements.INSTANCE.forFile(file);
-    optimizers.forEach(importOptimizer -> importOptimizer.processFile(file).run());
-  }
+	private void addImportList(PsiFile file, LuaImportDefinition importToCreate) {
+		var luaClass = file.getFirstChild();
+		final var packagePsi = PsiTreeUtil.getChildOfType(luaClass, LuaClassPackageDefinition.class);
+		if (Objects.nonNull(packagePsi)) {
+			luaClass.addAfter(LuaElementFactory.createImportListElement(file.getProject(), List.of(importToCreate)), packagePsi);
+			var importList = PsiTreeUtil.getChildOfType(luaClass, LuaImportList.class);
+			if (Objects.nonNull(importList)) {
+				luaClass.addBefore(LuaElementFactory.createCRLF(file.getProject()), importList);
+				var optimizers = LanguageImportStatements.INSTANCE.forFile(file);
+				optimizers.forEach(importOptimizer -> importOptimizer.processFile(file).run());
+			} else {
+				//TODO error importList was no created
+			}
+		} else {
+			//TODO error class has to have package
+		}
+	}
 
-  private void addImportToImportList(PsiFile file, LuaImportList importList, LuaImportDefinition importToCreate) {
-    final var firstImport = importList.getFirstChild();
-    if (Objects.nonNull(firstImport)) {
-      importList.addBefore(LuaElementFactory.createCRLF(file.getProject()), firstImport);
-      importList.addBefore(importToCreate, firstImport);
-      importList.addBefore(LuaElementFactory.createCRLF(file.getProject()), firstImport);
-      optimizeImports(file);
-    }
-  }
+	private void optimizeImports(PsiFile file) {
+		var optimizers = LanguageImportStatements.INSTANCE.forFile(file);
+		optimizers.forEach(importOptimizer -> importOptimizer.processFile(file).run());
+	}
 
-  private boolean isImportExist(LuaImportList importList, String importNameToCreate) {
-    return importList.getImportDefinitionList()
-        .stream()
-        .anyMatch(importDefinition -> importNameToCreate.equals(importDefinition.getClassNameWithPath().getUnquotedText()));
-  }
+	private void addImportToImportList(PsiFile file, LuaImportList importList, LuaImportDefinition importToCreate) {
+		final var firstImport = importList.getFirstChild();
+		if (Objects.nonNull(firstImport)) {
+			importList.addBefore(LuaElementFactory.createCRLF(file.getProject()), firstImport);
+			importList.addBefore(importToCreate, firstImport);
+			importList.addBefore(LuaElementFactory.createCRLF(file.getProject()), firstImport);
+			optimizeImports(file);
+		}
+	}
 
-  public String getFullClassPathFromImportsByName(String className, LuaImportList importList) {
-    return importList.getImportDefinitionList()
-        .stream()
-        .filter(luaImportDefinition -> luaImportDefinition.getClassNameWithPath().getUnquotedText().endsWith(className))
-        .findFirst()
-        .map(luaImportDefinition -> luaImportDefinition.getClassNameWithPath().getUnquotedText())
-        .orElse(null);
-  }
+	private boolean isImportExist(LuaImportList importList, String importNameToCreate) {
+		return importList.getImportDefinitionList()
+				.stream()
+				.anyMatch(
+						importDefinition -> importNameToCreate.equals(importDefinition.getClassNameWithPath().getUnquotedText()));
+	}
+
+	public String getFullClassPathFromImportsByName(String className, LuaImportList importList) {
+		return importList.getImportDefinitionList()
+				.stream()
+				.filter(luaImportDefinition -> luaImportDefinition.getClassNameWithPath().getUnquotedText().endsWith(className))
+				.findFirst()
+				.map(luaImportDefinition -> luaImportDefinition.getClassNameWithPath().getUnquotedText())
+				.orElse(null);
+	}
 }

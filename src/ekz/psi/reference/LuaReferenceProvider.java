@@ -18,26 +18,27 @@ import org.jetbrains.annotations.NotNull;
 
 public class LuaReferenceProvider extends PsiReferenceProvider {
 
-  private PsiReference getReference(LuaNamedElement psiElement) {
-    if (psiElement instanceof LuaParentName || psiElement instanceof LuaClassNameWithPath) {
-      return new LuaClassNameReference(psiElement, new TextRange(0, psiElement.getTextLength()));
-    } else if (psiElement instanceof LuaBeanName && !(psiElement.getParent() instanceof LuaBeanDefinition)) {
-      return new LuaBeanNameReference((LuaBeanName) psiElement, new TextRange(0, psiElement.getTextLength()));
-    } else if (psiElement instanceof LuaFuncDefName) {
-      return new LuaIdNameReference(psiElement, ((LuaFuncDefName) psiElement).getIdNameList().get(0).getTextRangeInParent());
-    } else if (psiElement instanceof LuaIdName) {
-      return new LuaIdNameReference(psiElement, new TextRange(0, psiElement.getTextLength()));
-    } else if (psiElement instanceof LuaClassVarBeanType) {
-      return new LuaBeanElementReference((LuaClassVarBeanType) psiElement, new TextRange(0, psiElement.getTextLength()));
-    } else if (psiElement instanceof LuaClassPackage) {
-      return new LuaClassPackageReference((LuaClassPackage) psiElement, new TextRange(0, psiElement.getTextLength()));
-    }
-    return null;
-  }
+	private PsiReference getReference(LuaNamedElement psiElement) {
+		if (psiElement instanceof LuaParentName || psiElement instanceof LuaClassNameWithPath) {
+			return new LuaClassNameReference(psiElement, new TextRange(0, psiElement.getTextLength()));
+		} else if (psiElement instanceof LuaBeanName && !(psiElement.getParent() instanceof LuaBeanDefinition)) {
+			return new LuaBeanNameReference((LuaBeanName) psiElement, new TextRange(0, psiElement.getTextLength()));
+		} else if (psiElement instanceof LuaFuncDefName) {
+			return new LuaIdNameReference(psiElement,
+					((LuaFuncDefName) psiElement).getIdNameList().get(0).getTextRangeInParent());
+		} else if (psiElement instanceof LuaIdName) {
+			return new LuaIdNameReference(psiElement, new TextRange(0, psiElement.getTextLength()));
+		} else if (psiElement instanceof LuaClassVarBeanType) {
+			return new LuaBeanElementReference((LuaClassVarBeanType) psiElement, new TextRange(0, psiElement.getTextLength()));
+		} else if (psiElement instanceof LuaClassPackage) {
+			return new LuaClassPackageReference((LuaClassPackage) psiElement, new TextRange(0, psiElement.getTextLength()));
+		}
+		return null;
+	}
 
-  @NotNull
-  @Override
-  public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
-    return new PsiReference[]{getReference((LuaNamedElement) element)};
-  }
+	@NotNull
+	@Override
+	public PsiReference[] getReferencesByElement(@NotNull PsiElement element, @NotNull ProcessingContext context) {
+		return new PsiReference[]{getReference((LuaNamedElement) element)};
+	}
 }

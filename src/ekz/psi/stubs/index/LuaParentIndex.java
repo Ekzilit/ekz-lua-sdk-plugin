@@ -7,17 +7,17 @@ import ekz.psi.stubs.StubKeys;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaParentIndex extends StringStubIndexExtension<LuaClass> {
-  public static final LuaParentIndex INSTANCE = new LuaParentIndex();
+	public static final LuaParentIndex INSTANCE = new LuaParentIndex();
 
-  @NotNull
-  @Override
-  public StubIndexKey<String, LuaClass> getKey() {
-    return StubKeys.LUA_CLASS_PARENT;
-  }
+	@NotNull
+	@Override
+	public StubIndexKey<String, LuaClass> getKey() {
+		return StubKeys.LUA_CLASS_PARENT;
+	}
 
-  @Override
-  public int getVersion() {
-    return 1;
-  }
+	@Override
+	public int getVersion() {
+		return 1;
+	}
 
 }

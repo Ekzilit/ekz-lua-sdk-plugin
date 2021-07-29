@@ -9,15 +9,15 @@ import org.jetbrains.annotations.NotNull;
 import static ekz.psi.search.LuaClassImplementationsSearchHelper.getChildren;
 
 public class LuaClassImplementationsSearcher extends QueryExecutorBase<LuaClass, LuaClassImplementationsSearch.SearchParameters> {
-  @Override
-  public void processQuery(@NotNull LuaClassImplementationsSearch.SearchParameters searchParameters,
-                           @NotNull Processor<? super LuaClass> processor) {
+	@Override
+	public void processQuery(@NotNull LuaClassImplementationsSearch.SearchParameters searchParameters,
+							 @NotNull Processor<? super LuaClass> processor) {
 
-    DumbService.getInstance(searchParameters.getLuaClassName().getProject()).runReadActionInSmartMode(() -> {
-      for (var luaClass : getChildren(searchParameters.getLuaClassName())) {
-        processor.process(luaClass);
-      }
-      return true;
-    });
-  }
+		DumbService.getInstance(searchParameters.getLuaClassName().getProject()).runReadActionInSmartMode(() -> {
+			for (var luaClass : getChildren(searchParameters.getLuaClassName())) {
+				processor.process(luaClass);
+			}
+			return true;
+		});
+	}
 }

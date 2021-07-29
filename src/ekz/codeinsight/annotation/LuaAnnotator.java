@@ -64,13 +64,16 @@ public class LuaAnnotator implements Annotator {
 			if (((LuaIdName) psiElement).isGlobal()) {
 				annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Global").textAttributes(GLOBAL_VAR).create();
 			} else if (((LuaIdName) psiElement).isFunctionAttribute()) {
-				annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Function attribute").textAttributes(FUNC_PARAMS).create();
+				annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Function attribute")
+						.textAttributes(FUNC_PARAMS)
+						.create();
 			} else if (((LuaIdName) psiElement).isLocal()) {
 				annotationHolder.newAnnotation(HighlightSeverity.INFORMATION, "Local").textAttributes(LOCAL_VAR).create();
 			}
 		} else if (psiElement instanceof LuaClassVarType && !classImportsHaveClassVarType((LuaClassVarType) psiElement)) {
 			annotationHolder.newAnnotation(HighlightSeverity.ERROR, "There is no import for " + psiElement.getText() + " type")
-					.withFix(new CreateImportQuickFix()).create();
+					.withFix(new CreateImportQuickFix())
+					.create();
 		}
 	}
 

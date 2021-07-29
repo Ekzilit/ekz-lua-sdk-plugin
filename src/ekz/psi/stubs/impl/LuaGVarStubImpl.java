@@ -8,7 +8,7 @@ import ekz.psi.stubs.LuaGVarStub;
 
 public class LuaGVarStubImpl extends StubBase<LuaIdName> implements LuaGVarStub {
 
-  public LuaGVarStubImpl(final StubElement parent) {
-    super(parent, LuaElementType.LUA_GVAR);
-  }
+	public LuaGVarStubImpl(final StubElement parent) {
+		super(parent, LuaElementType.LUA_GVAR);
+	}
 }

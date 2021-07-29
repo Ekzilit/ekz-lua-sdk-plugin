@@ -13,19 +13,20 @@ import ekz.psi.LuaClassVarName;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaSearch implements QueryExecutor<PsiElement, SearchParameters> {
-  @Override
-  public boolean execute(@NotNull SearchParameters searchParameters, @NotNull Processor<? super PsiElement> processor) {
-    final var element = searchParameters.getElement();
-    if (element instanceof LuaClassName) {
-      LuaClassImplementationsSearch.search(new LuaClassImplementationsSearch.SearchParameters((LuaClassName) element))
-          .forEach(processor);
-    } else if (element instanceof LuaClassHeader) {
-      LuaClassImplementationsSearch.search(
-          new LuaClassImplementationsSearch.SearchParameters(((LuaClassHeader) element).getClassName())).forEach(processor);
-    } else if (element instanceof LuaClassVarName || element instanceof LuaClassMethodName) {
-      LuaClassElementImplementationsSearch.search(new LuaClassElementImplementationsSearch.SearchParameters(
-          PsiTreeUtil.getParentOfType(element, LuaClassElementDefinition.class))).forEach(processor);
-    }
-    return true;
-  }
+	@Override
+	public boolean execute(@NotNull SearchParameters searchParameters, @NotNull Processor<? super PsiElement> processor) {
+		final var element = searchParameters.getElement();
+		if (element instanceof LuaClassName) {
+			LuaClassImplementationsSearch.search(new LuaClassImplementationsSearch.SearchParameters((LuaClassName) element))
+					.forEach(processor);
+		} else if (element instanceof LuaClassHeader) {
+			LuaClassImplementationsSearch.search(
+					new LuaClassImplementationsSearch.SearchParameters(((LuaClassHeader) element).getClassName()))
+					.forEach(processor);
+		} else if (element instanceof LuaClassVarName || element instanceof LuaClassMethodName) {
+			LuaClassElementImplementationsSearch.search(new LuaClassElementImplementationsSearch.SearchParameters(
+					PsiTreeUtil.getParentOfType(element, LuaClassElementDefinition.class))).forEach(processor);
+		}
+		return true;
+	}
 }

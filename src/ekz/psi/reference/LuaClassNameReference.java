@@ -21,19 +21,19 @@ import static ekz.codeinsight.navigation.LuaClassHelper.getClassPathFromFullPath
 
 public class LuaClassNameReference extends PsiReferenceBase<LuaNamedElement> implements PsiPolyVariantReference {
 
-  public LuaClassNameReference(@NotNull final LuaNamedElement element, final TextRange rangeInElement) {
-    super(element, rangeInElement);
-  }
+	public LuaClassNameReference(@NotNull final LuaNamedElement element, final TextRange rangeInElement) {
+		super(element, rangeInElement);
+	}
 
-  @NotNull
-  @Override
-  public ResolveResult[] multiResolve(final boolean b) {
-    if (myElement instanceof LuaClassNameWithPath) {
-      var project = myElement.getProject();
-      var className = getClassNameFromFullPath(((LuaClassNameWithPath) myElement).getUnquotedText());
-      var classPath = getClassPathFromFullPath(((LuaClassNameWithPath) myElement).getUnquotedText());
-      return getClassByNameAndPath(project, className, classPath);
-      //handled by idName
+	@NotNull
+	@Override
+	public ResolveResult[] multiResolve(final boolean b) {
+		if (myElement instanceof LuaClassNameWithPath) {
+			var project = myElement.getProject();
+			var className = getClassNameFromFullPath(((LuaClassNameWithPath) myElement).getUnquotedText());
+			var classPath = getClassPathFromFullPath(((LuaClassNameWithPath) myElement).getUnquotedText());
+			return getClassByNameAndPath(project, className, classPath);
+			//handled by idName
   /*  } else if (myElement instanceof LuaParentName) {
       var project = myElement.getProject();
       var className = ((LuaParentName) myElement).getUnquotedText();
@@ -47,29 +47,29 @@ public class LuaClassNameReference extends PsiReferenceBase<LuaNamedElement> imp
               .orElse(""))
           .orElse("");
       return getClassByNameAndPath(project, className, classPath);*/
-    }
-    return new ResolveResult[0];
-  }
+		}
+		return new ResolveResult[0];
+	}
 
-  @NotNull
-  private ResolveResult[] getClassByNameAndPath(Project project, String className, String classPath) {
-    if (StringUtil.isEmpty(className)) {
-      return new ResolveResult[0];
-    }
-    return LuaClassIndex.INSTANCE.get(className, project, GlobalSearchScope.allScope(project))
-        .stream()
-        .filter(luaClass -> className.equals(luaClass.getClassHeader().getClassName().getUnquotedText()) &&
-            classPath.equals(luaClass.getClassPackageDefinition().getClassPackage().getUnquotedText()))
-        .map(PsiElementResolveResult::new)
-        .toArray(ResolveResult[]::new);
-  }
+	@NotNull
+	private ResolveResult[] getClassByNameAndPath(Project project, String className, String classPath) {
+		if (StringUtil.isEmpty(className)) {
+			return new ResolveResult[0];
+		}
+		return LuaClassIndex.INSTANCE.get(className, project, GlobalSearchScope.allScope(project))
+				.stream()
+				.filter(luaClass -> className.equals(luaClass.getClassHeader().getClassName().getUnquotedText()) &&
+						classPath.equals(luaClass.getClassPackageDefinition().getClassPackage().getUnquotedText()))
+				.map(PsiElementResolveResult::new)
+				.toArray(ResolveResult[]::new);
+	}
 
-  @Nullable
-  @Override
-  public PsiElement resolve() {
-    var resolveResults = multiResolve(false);
-    return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
-  }
+	@Nullable
+	@Override
+	public PsiElement resolve() {
+		var resolveResults = multiResolve(false);
+		return resolveResults.length >= 1 ? resolveResults[0].getElement() : null;
+	}
 
 /*  @NotNull
   @Override
@@ -86,8 +86,8 @@ public class LuaClassNameReference extends PsiReferenceBase<LuaNamedElement> imp
     return new Object[0];
   }*/
 
-  @Override
-  public PsiElement handleElementRename(@NotNull final String newElementName) throws IncorrectOperationException {
-    return myElement.setName(newElementName);
-  }
+	@Override
+	public PsiElement handleElementRename(@NotNull final String newElementName) throws IncorrectOperationException {
+		return myElement.setName(newElementName);
+	}
 }

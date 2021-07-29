@@ -8,10 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LuaSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
-  @NotNull
-  @Override
-  public SyntaxHighlighter getSyntaxHighlighter(@Nullable final Project project,
-                                                @Nullable final VirtualFile virtualFile) {
-    return new LuaSyntaxHighlighter();
-  }
+	@NotNull
+	@Override
+	public SyntaxHighlighter getSyntaxHighlighter(@Nullable final Project project, @Nullable final VirtualFile virtualFile) {
+		return new LuaSyntaxHighlighter();
+	}
 }

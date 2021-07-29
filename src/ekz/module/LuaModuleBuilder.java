@@ -16,56 +16,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LuaModuleBuilder extends ModuleBuilder implements SourcePathsBuilder {
-  private List<Pair<String, String>> mySourcePaths;
+	private List<Pair<String, String>> mySourcePaths;
 
-  @Override
-  public ModuleType getModuleType() {
-    return LuaModuleType.INSTANCE;
-  }
+	@Override
+	public ModuleType getModuleType() {
+		return LuaModuleType.INSTANCE;
+	}
 
-  @Override
-  public List<Pair<String, String>> getSourcePaths() throws ConfigurationException {
-    if (mySourcePaths == null) {
-      final List<Pair<String, String>> paths = new ArrayList<>();
-      @NonNls final var path = getContentEntryPath() + File.separator + "src";
-      new File(path).mkdirs();
-      paths.add(Pair.create(path, ""));
-      return paths;
-    }
-    return mySourcePaths;
-  }
+	@Override
+	public List<Pair<String, String>> getSourcePaths() throws ConfigurationException {
+		if (mySourcePaths == null) {
+			final List<Pair<String, String>> paths = new ArrayList<>();
+			@NonNls final var path = getContentEntryPath() + File.separator + "src";
+			new File(path).mkdirs();
+			paths.add(Pair.create(path, ""));
+			return paths;
+		}
+		return mySourcePaths;
+	}
 
-  @Override
-  public void setSourcePaths(List<Pair<String, String>> sourcePaths) {
-    mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
-  }
+	@Override
+	public void setSourcePaths(List<Pair<String, String>> sourcePaths) {
+		mySourcePaths = sourcePaths != null ? new ArrayList<>(sourcePaths) : null;
+	}
 
-  @Override
-  public void addSourcePath(Pair<String, String> sourcePathInfo) {
-    if (mySourcePaths == null) {
-      mySourcePaths = new ArrayList<>();
-    }
-    mySourcePaths.add(sourcePathInfo);
-  }
+	@Override
+	public void addSourcePath(Pair<String, String> sourcePathInfo) {
+		if (mySourcePaths == null) {
+			mySourcePaths = new ArrayList<>();
+		}
+		mySourcePaths.add(sourcePathInfo);
+	}
 
-  @Override
-  public void setupRootModel(@NotNull ModifiableRootModel rootModel) throws ConfigurationException {
-    var contentEntry = doAddContentEntry(rootModel);
-    if (contentEntry != null) {
-      final var sourcePaths = getSourcePaths();
+	@Override
+	public void setupRootModel(@NotNull ModifiableRootModel rootModel) throws ConfigurationException {
+		var contentEntry = doAddContentEntry(rootModel);
+		if (contentEntry != null) {
+			final var sourcePaths = getSourcePaths();
 
-      if (sourcePaths != null) {
-        for (final var sourcePath : sourcePaths) {
-          var first = sourcePath.first;
-          new File(first).mkdirs();
-          final var sourceRoot = LocalFileSystem.getInstance()
-              .refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
-          if (sourceRoot != null) {
-            contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
-          }
-        }
-      }
-    }
-  }
+			if (sourcePaths != null) {
+				for (final var sourcePath : sourcePaths) {
+					var first = sourcePath.first;
+					new File(first).mkdirs();
+					final var sourceRoot = LocalFileSystem.getInstance()
+							.refreshAndFindFileByPath(FileUtil.toSystemIndependentName(first));
+					if (sourceRoot != null) {
+						contentEntry.addSourceFolder(sourceRoot, false, sourcePath.second);
+					}
+				}
+			}
+		}
+	}
 
 }

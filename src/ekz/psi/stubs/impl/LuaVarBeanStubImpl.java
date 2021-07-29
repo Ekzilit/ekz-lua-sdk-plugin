@@ -8,7 +8,7 @@ import ekz.psi.stubs.LuaVarBeanStub;
 
 public class LuaVarBeanStubImpl extends StubBase<LuaClassVarDefinition> implements LuaVarBeanStub {
 
-  public LuaVarBeanStubImpl(final StubElement parent) {
-    super(parent, LuaElementType.LUA_VAR_BEAN);
-  }
+	public LuaVarBeanStubImpl(final StubElement parent) {
+		super(parent, LuaElementType.LUA_VAR_BEAN);
+	}
 }

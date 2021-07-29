@@ -7,14 +7,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LuaFindUsagesHandlerFactory extends FindUsagesHandlerFactory {
-  @Override
-  public boolean canFindUsages(@NotNull PsiElement element) {
-    return new LuaFindUsagesProvider().canFindUsagesFor(element);
-  }
+	@Override
+	public boolean canFindUsages(@NotNull PsiElement element) {
+		return new LuaFindUsagesProvider().canFindUsagesFor(element);
+	}
 
-  @Nullable
-  @Override
-  public FindUsagesHandler createFindUsagesHandler(@NotNull PsiElement element, boolean forHighlightUsages) {
-    return new LuaFindUsagesHandler(element);
-  }
+	@Nullable
+	@Override
+	public FindUsagesHandler createFindUsagesHandler(@NotNull PsiElement element, boolean forHighlightUsages) {
+		return new LuaFindUsagesHandler(element);
+	}
 }

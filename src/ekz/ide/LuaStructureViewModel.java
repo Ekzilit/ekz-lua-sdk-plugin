@@ -12,22 +12,22 @@ import ekz.psi.LuaFile;
 import org.jetbrains.annotations.NotNull;
 
 public class LuaStructureViewModel extends StructureViewModelBase implements StructureViewModel.ElementInfoProvider {
-  public LuaStructureViewModel(@NotNull PsiFile psiFile, Editor editor) {
-    super(psiFile, editor, new LuaStructureViewElement(psiFile));
-  }
+	public LuaStructureViewModel(@NotNull PsiFile psiFile, Editor editor) {
+		super(psiFile, editor, new LuaStructureViewElement(psiFile));
+	}
 
-  @Override
-  public boolean isAlwaysShowsPlus(StructureViewTreeElement element) {
-    return false;
-  }
+	@Override
+	public boolean isAlwaysShowsPlus(StructureViewTreeElement element) {
+		return false;
+	}
 
-  @Override
-  public boolean isAlwaysLeaf(StructureViewTreeElement element) {
-    return element instanceof LuaFile;
-  }
+	@Override
+	public boolean isAlwaysLeaf(StructureViewTreeElement element) {
+		return element instanceof LuaFile;
+	}
 
-  @Override
-  protected boolean isSuitable(PsiElement element) {
-    return element instanceof LuaClassElementDefinition || element instanceof LuaClass;
-  }
+	@Override
+	protected boolean isSuitable(PsiElement element) {
+		return element instanceof LuaClassElementDefinition || element instanceof LuaClass;
+	}
 }
